@@ -4,12 +4,13 @@ import {
     createAsyncThunk,
     createEntityAdapter,
 } from '@reduxjs/toolkit';
-import { AssignRoleUpdate } from '../../api/routes';
-const screenAdapter = createEntityAdapter();
+import { getRoleList } from '../../api/routes';
 
-const initialState = screenAdapter.getInitialState({
+const assignroleAdapter = createEntityAdapter();
+
+const initialState = assignroleAdapter.getInitialState({
     status: 'idle',
-    assignrollUpdate:[]
+    fetchRoleList: []
 });
 
 export const addScreen = createAsyncThunk(
@@ -29,11 +30,11 @@ export const addScreen = createAsyncThunk(
 
 
 
-export const assignUpdate = createAsyncThunk(
+export const fetchRoleList = createAsyncThunk(
     'screen/list',
     async () => {
         try {
-            const response = await AssignRoleUpdate();
+            const response = await getRoleList();
             if (response) {
                 return response;
             }
@@ -51,8 +52,8 @@ const assignSlice = createSlice({
     reducers: {
     },
     extraReducers: {
-        [assignUpdate.fulfilled]: (state, action) => {
-            console.log(" action.payload", action.payload)
+        [fetchRoleList.fulfilled]: (state, action) => {
+            console.log("fetchRoleList <<<<", action.payload)
             state.screens = action.payload;
         },
     }
@@ -60,9 +61,9 @@ const assignSlice = createSlice({
 export const {
     selectAll: selectAllProfiles,
     selectById: selectProfilesById,
-} = screenAdapter.getSelectors((state) => {
-    console.log("state.screenAdapter",state.screenAdapter)
-    return state.screenAdapter;
+} = assignroleAdapter.getSelectors((state) => {
+    console.log("state.screenAdapter", state.assignroleAdapter)
+    return state.assignroleAdapter;
 });
 
 

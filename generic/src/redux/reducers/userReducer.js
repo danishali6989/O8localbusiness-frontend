@@ -5,9 +5,9 @@ import {
     createEntityAdapter,
 } from '@reduxjs/toolkit';
 import {deleteUserApi, getAlluserData, getData} from '../../api/routes';
-const authAdapter = createEntityAdapter();
+const userAdapter = createEntityAdapter();
 
-const initialState = authAdapter.getInitialState({
+const initialState = userAdapter.getInitialState({
     status: 'idle',
     data:{},
     role:{},
@@ -25,10 +25,7 @@ export const getAllData=createAsyncThunk(
         try{
             const response=await getData()
             // console.log("getData",response)
-
             return response;
-
-
         }
         catch(err){
             return Promise.reject('NETWORK_ERROR');
@@ -128,7 +125,7 @@ const userSlice = createSlice({
 export const {
     selectAll: selectAllProfiles,
     selectById: selectProfilesById,
-} = authAdapter.getSelectors((state) => {
+} = userAdapter.getSelectors((state) => {
     return state.userReducer;
 });
 

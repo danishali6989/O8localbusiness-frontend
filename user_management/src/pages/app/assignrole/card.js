@@ -11,7 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch } from 'react-redux';
-import { assignUpdate } from 'generic'
+import { fetchRoleList } from 'generic'
 
 const useStyles = makeStyles({
     root: {
@@ -49,7 +49,7 @@ export const NewCard = () => {
     }, [])
 
     const DataAdd = async () => {
-        const result = await dispatch(assignUpdate());
+        const result = await dispatch(fetchRoleList());
         console.log('result', result.payload)
         if (result) {
             setAddrole(result.payload)
@@ -72,7 +72,7 @@ export const NewCard = () => {
             {addrole.map((item, index) => {
                 return (
 
-                    <  Grid key={index} className={classes.root}  >
+                    <Grid key={index} className={classes.root} >
                         <Card variant="outlined">
                             <CardHeader
                                 action={

@@ -15,7 +15,7 @@ export {
 } from './src/redux/reducers/newscreenReducer';
 
 export {
-  assignUpdate
+  fetchRoleList
 } from './src/redux/reducers/assignroleReducer';
 
 

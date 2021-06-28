@@ -4,7 +4,9 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import {persistReducer, persistStore} from 'redux-persist';
 
 import accountReducer from './reducers/authReducer';
-import userReducer from './reducers/userReducer'
+import userReducer from './reducers/userReducer';
+import assignroleReducer from './reducers/assignroleReducer';
+
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
 
 export const createStoreAndPersistor = (storage) => {
@@ -18,6 +20,7 @@ export const createStoreAndPersistor = (storage) => {
             combineReducers({
                 accountReducer,
                 userReducer,
+                assignroleReducer,
             }),
         ),
         composedEnhancer,
