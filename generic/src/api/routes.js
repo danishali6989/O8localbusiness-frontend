@@ -1,68 +1,220 @@
-import { post, get, delte } from './requests';
+import { post, get, delte, getid } from './requests';
 import { getAppConfiguration } from '../config';
 
-const login = async (data) => {
-    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/Userlogin', data);
+const login = async ({ data }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/Userlogin', { data });
     return result;
 };
 
-const register = async (data) => {
-    const result = await post(getAppConfiguration().BASE_URL + 'User/add', data);
+const userlogoutbyId = async ({ id }) => {
 
+    console.log("checkResult", id)
+    const result = await post(getAppConfiguration().BASE_URL + `UserLogin/logout/${id}`)
+    console.log("userlogoutbyId", result)
     return result;
 }
 
-const getData = async () => {
-
-    const result = await get(getAppConfiguration().BASE_URL + 'UserRole/get-all')
+const register = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'User/add', { data, token });
+    return result;
+}
+const forgotPassword = async ({ data }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/forgotPassword?email=' + data.email, { data, token: '' });
     return result;
 }
 
+const chnagePassword = async ({ data }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/changePassword?otp=' + data.otp + '&password=' + data.password + '&email=' + data.email, { data, token: '' });
+    return result;
+}
+
+
+const getUserDetailById = async ({ id }) => {
+    const result = await get(getAppConfiguration().BASE_URL + `User/get-detail/${id}`)
+    return result;
+}
 
 const getAlluserData = async () => {
     const result = await get(getAppConfiguration().BASE_URL + 'User/get-all')
     return result;
 }
 
-
-const deleteUserApi = async (id) => {
-    console.log(id)
-    const result = await post(getAppConfiguration().BASE_URL + `User/delete/${id}`)
-    console.log("deleteUserApi", result)
+const getRole = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'UserRole/get-all')
     return result;
 }
 
-const EditUserApi = async (id, data) => {
-    console.log(id)
-    const result = await post(getAppConfiguration().BASE_URL + 'User/edit', data)
-    console.log("updateUserApi", result)
+
+// const getAlluserData = async () => {
+
+//     const result = await get(getAppConfiguration().BASE_URL + 'User/get-all')
+
+//     return result;
+// }
+
+
+const deleteUserApi = async ({ id, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + `User/delete/${id}`, { token })
+    return result;
+}
+
+const EditUserApi = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'User/edit', { data, token })
+    return result;
+}
+
+const toggleSwitch = async ({ data, id, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + `User/toggle-status/${id}?status=` + data.status, { data, token })
+    return result;
+}
+
+const adminChangepass = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'User/Admin-change-password', { data, token })
     return result;
 }
 
 
 const getScreens = async () => {
-    const result = await get(getAppConfiguration().BASE_URL + 'UserScreenAccess/getAllScreens');
+    const result = await get(getAppConfiguration().BASE_URL + 'Screen/get-all');
     return result;
 };
+
+const getScreensbyRole = async (data) => {
+    const result = await get(getAppConfiguration().BASE_URL + 'UserScreenAccess/getScreenAccessByUserRoleId/' + data.id, data.token);
+    return result;
+}
+
+const AddScreen = async (data) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'Screen/add', { data, token: data.token });
+    return result;
+}
+const EditScreen = async (data) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'Screen/edit', { data, token: data.token });
+    return result;
+}
+const DeleteScreen = async ({ id, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + `Screen/delete/${id}`, { token })
+    return result;
+}
 
 const NewScreen = async (data) => {
     const result = await post(getAppConfiguration().BASE_URL + 'UserRole/add', data);
     return result;
 }
 
-const getRoleList = async () => {
-    const result = await get(getAppConfiguration().BASE_URL + 'UserRole/get-all');
+
+
+// <------------------------------------------add role------------------------------------>
+
+const addRole = async ({ data, token }) => {
+
+    const result = await post(getAppConfiguration().BASE_URL + 'UserRole/add', { data, token });
     return result;
 }
+
+const updateRole = async ({ data, token }) => {
+
+    const result = await post(getAppConfiguration().BASE_URL + 'UserRole/edit', { data, token });
+    return result;
+}
+
+const editRoleList = async (data) => {
+    const result = await get(getAppConfiguration().BASE_URL + 'UserRole/update-role', data);
+    return result;
+}
+
+const addScreenAccess = async ({ data, token }) => {
+
+    const result = await post(getAppConfiguration().BASE_URL + 'UserScreenAccess/AddScreenAccess', { data, token });
+    return result;
+}
+
+const getScreenAccessByUserRoleId = async ({ id, token }) => {
+    const result = await get(getAppConfiguration().BASE_URL + `UserScreenAccess/getScreenAccessByUserRoleId/${id}`, token);
+    return result;
+}
+
+// <!-----------------------------------------------------Language -------------------------------------------------->
+
+
+const languageGetAll = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'Languages/get-all');
+    return result;
+}
+
+const languageUserUpdate = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'Languages/UpdateUserLanguage', { data, token });
+    return result;
+}
+
+
+const FieldGetAll = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'Field/get-all');
+    return result;
+}
+
+const FieldDetailsbylanguage = async (lang_id,token) => {
+    const result = await get(getAppConfiguration().BASE_URL + `Field/get-Field-detail-By-Language?lang_id=${lang_id}`,token);
+    return result;
+}
+
+// <-------------------------------------------------------EmailSetting --------------------------------------->
+
+const EmailSettingAdd = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'EmailSetting/add', { data, token });
+    console.log("resultEmail")
+    return result;
+}
+
+const EmailSettingUpdate = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'EmailSetting/edit', { data, token });
+    console.log("resultEmail")
+    return result;
+}
+
+const EmailSettingDelete = async ({ id, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + `EmailSetting/delete/${id}`, { token });
+    console.log("resultEmail")
+    return result;
+}
+
+
+const getAllEmailDetails = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'EmailSetting/get-all');
+    return result;
+};
 
 export {
     login,
     getScreens,
+    DeleteScreen,
     NewScreen,
-    getRoleList,
     register,
-    getData,
+    forgotPassword,
+    chnagePassword,
+    adminChangepass,
+    addScreenAccess,
+    getRole,
     getAlluserData,
     deleteUserApi,
-    EditUserApi
+    EditUserApi,
+    editRoleList,
+    AddScreen,
+    toggleSwitch,
+    addRole,
+    updateRole,
+    EditScreen,
+    getScreenAccessByUserRoleId,
+    getScreensbyRole,
+    languageGetAll,
+    languageUserUpdate,
+    getUserDetailById,
+    userlogoutbyId,
+    EmailSettingAdd,
+    getAllEmailDetails,
+    EmailSettingUpdate,
+    EmailSettingDelete,
+    FieldGetAll,
+    FieldDetailsbylanguage
+
 };

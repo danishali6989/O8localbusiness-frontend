@@ -1,9 +1,16 @@
-import React, {useEffect} from 'react';
-import {DashBoard, UserManagement, ForgotPassword,Screen,AssignRole} from '../pages';
-import {Route, Switch,withRouter} from 'react-router-dom';
+import React, { useEffect, } from 'react';
+import { DashBoard, UserManagement, ForgotPassword, Screen, AssignRole, Report } from '../pages';
+import { Route, Switch, withRouter, Router } from 'react-router-dom';
 import { EditUser } from '../pages/app/EditInfo';
+import { useUserData } from '../hooks/useUserData';
+import { PrivateRoutes } from './PrivateRoutes';
 
-export const MainRouter = withRouter(({location}) => {
+import { Login } from '../pages/auth/login'
+import { PublicRoute, PrivateRoute } from 'react-private-public-route'
+
+export const MainRouter = withRouter(({ location }) => {
+    const user = useUserData();
+    console.log("userlog", user)
 
     useEffect(() => {
         const getPassword = () => {
@@ -19,18 +26,22 @@ export const MainRouter = withRouter(({location}) => {
         getPassword();
     });
 
+
     return (
-        <>
+   
 
             <Switch>
-             <Route exact path='/dashboard' component={DashBoard} />
-                <Route exact path='/UserManagement' component={UserManagement} />
-                <Route  exact path='/Screen' component={Screen}/>
-                <Route   exact path='/AssignRole' component={AssignRole} />
-                <Route exact path='/ForgotPassword' component={ForgotPassword} />
+
+                <Route exact path='/dashboard' component={DashBoard} />
+                {/* <Route exact path='/UserManagement' component={UserManagement} /> */}
+                <Route exact path='/Screen' component={Screen} />
+                <Route exact path='/Roles' component={AssignRole} />
+                <Route exact path='/reports' component={Report} />
                 <Route exact path='/' component={DashBoard} />
-                <Route exact path='/editUser/:id'  component={EditUser} />
+                <PrivateRoutes path="/UserManagement" component={UserManagement} />
+                <Route exact path='/login' component={Login} />
             </Switch>
-        </>
+
+
     );
 });

@@ -47,7 +47,6 @@ const NewscreenSlice = createSlice({
     extraReducers: {
         [Newscreen.fulfilled]: (state, action) => {
             state.token = action.payload;
-            console.log("action.payload", action.payload)
             state.isAuthenticate = true
         },
     }
@@ -64,8 +63,7 @@ export const {
 
 
 export const {
-    // getToken,
-    // clearToken
+    
 } = NewscreenSlice.actions;
 
 export default NewscreenSlice.reducer;

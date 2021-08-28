@@ -4,13 +4,15 @@ import {
     createAsyncThunk,
     createEntityAdapter,
 } from '@reduxjs/toolkit';
-import { login, register} from '../../api/routes';
+import { login, register, forgotPassword, chnagePassword, userlogoutbyId } from '../../api/routes';
 const authAdapter = createEntityAdapter();
 
 const initialState = authAdapter.getInitialState({
     status: 'idle',
     token: '',
     username: null,
+    pasw: '',
+    chngpass: null,
     connectedId: null,
     deviceId: null,
     isAuthenticate: false
@@ -18,51 +20,114 @@ const initialState = authAdapter.getInitialState({
 
 export const doLogin = createAsyncThunk(
     'auth/Login',
-    async (data) => {
+    async ({ data }) => {
         try {
-            const response = await login(data);
+            const response = await login({ data });
             if (response) {
+
                 return response;
             }
         } catch (err) {
-            return Promise.reject('NETWORK_ERROR');
+            return err;
         }
     },
 );
 
+export const userlogoutbyIdThunk = createAsyncThunk(
+    'auth/userLogout',
+    async ({ id }) => {
 
-export const doRegister=createAsyncThunk(
+        console.log("logid", id)
+        try {
+            const response = await userlogoutbyId({ id })
+
+            console.log("response>>", response)
+            return response;
+        }
+        catch (err) {
+            return Promise.reject('NETWORK_ERROR');
+        }
+    }
+)
+
+
+export const doRegister = createAsyncThunk(
     'auth/Register',
-    async(data)=>{
-        try{
-            const response=await register(data)
-            console.log("doRegister",response)
+    async ({ data, token }) => {
+
+        try {
+            const response = await register({ data, token })
+            return response;
+        }
+        catch (err) {
+            return Promise.reject('NETWORK_ERROR');
+        }
+    }
+)
+
+
+export const forgotPasswordThunk = createAsyncThunk(
+    'forgotpsw/user',
+    async ({ data }) => {
+
+
+        try {
+
+            const response = await forgotPassword({ data })
 
             return response;
 
 
         }
-        catch(err){
-            return Promise.reject('NETWORK_ERROR');
+        catch (err) {
+
+
+            return err;
 
         }
     }
 )
+export const changePasswordThunk = createAsyncThunk(
+    'changepasw/user',
+    async ({ data }) => {
+
+        try {
+            const response = await chnagePassword({ data })
+            return response;
+        }
+        catch (err) {
+            return err;
+        }
+    }
+)
+
+
+
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         getToken(state, action) {
-           
+
             state.token = action.payload.token;
         },
         clearToken(state, action) {
             state.token = null;
         },
 
-        getData(state,action){
-            state.data=action.payload.response
+        getData(state, action) {
+            state.data = action.payload.response
+
+        },
+        clearAuthReducer(state, action) {
+            state.token = '',
+                state.username = null,
+                state.pasw = '',
+                state.chngpass = null,
+                state.connectedId = null,
+                state.deviceId = null,
+                state.isAuthenticate = false
 
         }
     },
@@ -71,7 +136,18 @@ const authSlice = createSlice({
             state.token = action.payload;
             state.isAuthenticate = true
         },
-    
+
+        [forgotPasswordThunk.fulfilled]: (state, action) => {
+            state.pasw = action.payload
+        },
+        [changePasswordThunk.fulfilled]: (state, action) => {
+            state.chngpass = action.payload
+        },
+        [userlogoutbyIdThunk.fulfilled]: (state, action) => {
+            state.logoutbyid = action.payload
+        },
+
+
 
     },
 
@@ -90,6 +166,7 @@ export const {
 export const {
     getToken,
     clearToken,
+    clearAuthReducer
 } = authSlice.actions;
 
 export default authSlice.reducer;

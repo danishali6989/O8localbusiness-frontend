@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,10 +11,24 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import { useCustomNotify } from '../../../components'
+import ReCAPTCHA from "react-google-recaptcha";
+import {  useHistory } from 'react-router-dom';
+import { fetchScreensbyRole } from 'generic';
+import { useSelector } from 'react-redux'
+import jwtDecode from 'jwt-decode';
+import { doLogin } from 'generic';
+import { useDispatch } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
+
+
+
+// import { useHistory } from 'react-dom'; 
 // import {useHistory} from 'react-router-dom';
-import {doLogin} from 'generic';
-import {useDispatch} from 'react-redux';
+// import { Validation } from '../../../utils/validation';
+// import { useHistory } from 'react-router';
+
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -63,15 +77,90 @@ const useStyles = makeStyles((theme) => ({
 
 export const Login = () => {
     const classes = useStyles();
+    // const location = useLocation()
+    const history = useHistory()
     // const history = useHistory();
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [isSubmit, setIsSubmit] = useState(false)
+    const [status, setStatus] = useState(false)
     const dispatch = useDispatch()
-    const login = async () => {
-        const result = await dispatch(doLogin({username: 'riyaztrad', password: '123456'}))
-        console.log("result", result)
-        if (result.payload) {
-            localStorage.setItem("token", result.payload.token)
+    const CustomNotify = useCustomNotify();
+    const recaptchaRef = React.createRef();
+    const auth = useSelector((state) => state.accountReducer);
+    const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
+
+
+    useEffect(() => {
+        console.log({ auth, screenByRole })
+        return () => {
+
         }
+    }, [])
+    // console.log("authtoken",auth.token)
+
+    // useEffect(() => {
+    //         if (auth.token !== null && auth.token !== "" && auth.token !== undefined) {
+
+    //             getScreensbyRole()
+    //         }
+    //     }, [auth])
+
+    const getScreensbyRole = async (token) => {
+        const decoded = jwtDecode(token);
+        const data = {
+            id: decoded.RoleId,
+            token: token
+        }
+
+        const result = await dispatch(fetchScreensbyRole(data));
+        if (result.payload !== undefined) {
+            console.log("getScreensbyRole", result.payload[0].screenUrl)
+            history.push(result.payload[0].screenUrl);
+        } else {
+            CustomNotify("Invalid Credentials", "error");
+        }
+
+
     }
+    const login = async () => {
+
+        // if (status) {
+            if (username !== "" && password !== "") {
+
+                setIsSubmit(true)
+
+                const token = window.localStorage.getItem('token')
+                const data = {
+                    username,
+                    password
+                }
+
+                const result = await dispatch(doLogin({ data, token }))
+                console.log("result", result.payload)
+                if (result.payload !== undefined) {
+                    localStorage.setItem("token", result.payload);
+                    setIsSubmit(false);
+                    getScreensbyRole(result.payload);
+                } else {
+
+                    CustomNotify("Invalid Credentials", "error");
+                }
+            } else {
+                CustomNotify("Please provide username and password", "error");
+
+            }
+
+        // }
+
+
+        setIsSubmit(false)
+
+    }
+    // const handler = (value) => {
+    //     console.log(value)
+    //     setStatus(true)
+    // }
 
     return (
         <Grid container component="main" className={classes.root}>
@@ -82,7 +171,7 @@ export const Login = () => {
                     <Avatar className={classes.avatar}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography component="h1" variant="h5" >
                         Sign in
                     </Typography>
                     <form className={classes.form} noValidate>
@@ -96,6 +185,7 @@ export const Login = () => {
                             name="username"
                             autoComplete="email"
                             autoFocus
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                         <TextField
                             variant="outlined"
@@ -107,30 +197,58 @@ export const Login = () => {
                             type="password"
                             id="password"
                             autoComplete="current-password"
+                            onChange={(e) => setPassword(e.target.value)}
                         />
+
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
                         />
+                        {/* <ReCAPTCHA
+                       
+                            sitekey="6LcJp78bAAAAAEOtxDnl6BoADH6Nq12fe_vzLjof"
+                            ref={recaptchaRef}
+                            value={status}
+                            onChange={handler}
+                        /> */}
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            disabled={isSubmit}
+
+
                             onClick={(event) => {
                                 event.preventDefault();
                                 login()
-                                // history.push('/dashboard');
+
+                                // history.push('/Userlogin');
                             }}
                         >
-                            Sign In
+                            {isSubmit ? <CircularProgress size={18} /> : 'submit'}
+
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="/ForgotPassword" variant="body2">
-                                    Forgot password?
-                                </Link>
+                                <Typography
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        history.push('/ForgotPassword')
+                                    }}
+                                    style={{
+                                        textTransform: 'capitalize',
+                                        fontSize: 15, color: '#3f51b5',
+                                        cursor: 'pointer'
+
+
+                                    }}
+                                    component="h1" variant="h5">
+                                    Forget Password
+                                </Typography>
+
+
                             </Grid>
                             {/* <Grid item>
                                 <Link href="#" variant="body2">

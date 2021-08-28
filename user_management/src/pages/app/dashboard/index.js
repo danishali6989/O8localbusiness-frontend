@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -11,6 +11,10 @@ import Chart from './components/charts';
 import Deposits from './components/deposits';
 import Orders from './components/orders';
 import {AppConainer} from '../../../components'
+import { useDispatch } from 'react-redux';
+import {getRoleThunk, getAlluserDatathunk, editUserThunk} from 'generic/src/redux/reducers/userReducer';
+import {languageAllThunk} from 'generic'
+
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -97,8 +101,9 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff'
     },
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        paddingTop: 20
+        // paddingTop: theme.spacing(4),
+        // paddingBottom: theme.spacing(4),
     },
     paper: {
         padding: theme.spacing(2),
@@ -114,6 +119,17 @@ const useStyles = makeStyles((theme) => ({
 
 export const DashBoard = () => {
     const classes = useStyles();
+
+    const dispatch=useDispatch()
+
+    useEffect(async()=>{
+   const result=await     dispatch(getRoleThunk())
+  const response= await dispatch(languageAllThunk())
+   console.log("ddd",result)
+   console.log("eee",response)
+
+
+    },[])
   
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 

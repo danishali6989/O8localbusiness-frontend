@@ -5,10 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { IconButton } from '@material-ui/core';
 import { CardHeader } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit'
-// import Gird from '@material-ui/core/Grid';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch } from 'react-redux';
 import { fetchRoleList } from 'generic'
@@ -43,36 +40,85 @@ export const NewCard = () => {
     const bull = <span className={classes.bullet}>•</span>;
     const dispatch = useDispatch();
     const [addrole, setAddrole] = useState([]);
+    const langField = useSelector((state) => state.languageReducer.fieldlanguage);
 
+    console.log("")
     useEffect(() => {
         DataAdd();
     }, [])
 
     const DataAdd = async () => {
         const result = await dispatch(fetchRoleList());
-        console.log('result', result.payload)
         if (result) {
             setAddrole(result.payload)
         }
     }
 
+    const renderScreen = () => {
+        let keyInt;
+        if (langField) {
+            let filterField = langField.filter(i => i.field === description);
+            keyInt = filterField[0].description;
+        } else {
+            keyInt = description
+        }
 
-    // const Newdata = [
-    //     { Rollname: "David", RollId: "1" },
-    //     { Rollname: "Farces", RollId: "2", },
-    //     { Rollname: "Androuse", RollId: "3" },
-    //     { Rollname: "Icfons", RollId: "4" }
-    // ]
+        return (
+            <>
+                {addrole.map((item, index) => {
 
 
+                    return (
+
+                        <  Grid key={index} className={classes.root}  >
+                            <Card variant="outlined">
+                                <CardHeader
+                                    action={
+                                        <IconButton
+                                            edge="start"
+                                            aria-label="open drawer"
+                                            variant="contained" color="primary"
+                                        >
+                                            <Edit />
+                                        </IconButton>
+                                    }
+                                />
+                                <CardContent className={classes.newcss}  >
+                                    <Typography variant="h5" component="h2">
+                                        Role ID:{item.keyInt}
+                                    </Typography>
+                                    <Typography className={classes.pos} color="textSecondary">
+                                        Role Name:{item.value}
+                                    </Typography>
+
+                                </CardContent>
+
+                            </Card>
+                        </ Grid >
+
+
+
+                    )
+                })}
+            </>
+        )
+    }
 
     return (
         <>
 
-            {addrole.map((item, index) => {
+
+            {
+                addrole && renderScreen
+            }
+
+
+            {/* {addrole.map((item, index) => {
+
+
                 return (
 
-                    <Grid key={index} className={classes.root} >
+                    <  Grid key={index} className={classes.root}  >
                         <Card variant="outlined">
                             <CardHeader
                                 action={
@@ -101,7 +147,7 @@ export const NewCard = () => {
 
 
                 )
-            })}
+            })} */}
 
         </>
     )

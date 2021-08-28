@@ -54,33 +54,19 @@ export  function ResetPassword() {
 
   const history=useHistory()
 
-  const [email,setEmail]=useState('')
   const [otp,setOtp]=useState(false)
-//   const [showPasswo,setShowPassword]=useState(false)
+  const [password,setPassword]=useState('')
 
-//   const [values, setValues] = useState({
-//     email: '',
-//     otp: '',
-//     showPassword: false,
-//     password:''
-// });
-
-//     const handleChange = () => (event) => {
-//         setValues({ ...values, [event.target.name]: event.target.value });
-
-//         console.log(values.email)
-//     };
+  const [email,setEmail]=useState('');
+  const CustomNotify = useCustomNotify();
 
 const onchangeHandler=(e)=>{
     setEmail(e.target.value)
     // console.log(email)
-
     if(email){
         setOtp(true)
 
     }
-
-
 
 }
   
