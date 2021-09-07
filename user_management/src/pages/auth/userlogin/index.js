@@ -96,7 +96,8 @@ export const Userlogin = () => {
                             // }}
                             >
                                 {/* {loading ? <CircularProgress size={18} /> : 'Send Otp'} */}
-                                {<CircularProgress size={18} />}Sumbit
+                                {/* {<CircularProgress size={18} />} */}
+                                Sumbit
                             </Button>
                         </>
 

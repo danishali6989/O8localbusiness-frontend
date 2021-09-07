@@ -19,13 +19,14 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
-import { addRoleThunck } from 'generic';
+import Chip from '@material-ui/core/Chip';
+import { addRoleThunck, fetchScreens } from 'generic';
 import { useHistory } from 'react-router';
-import { addScreenAccessThunk } from 'generic'
+import { addScreenAccessThunk, getUserDataByIdThunk, getScreenAccessByUserRoleIdThunk } from 'generic'
 import Multiselect from 'multiselect-react-dropdown';
 import { useCustomNotify } from '../components'
 import { CircularProgress } from '@material-ui/core';
-
+import '../scrollbar.css'
 import { getRoleThunk } from 'generic/src/redux/reducers/userReducer';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,18 +67,14 @@ const useStyles = makeStyles((theme) => ({
 export const RoleCard = ({ data, handleClose, open, setOpen }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const user = useUserData()
+    const userData = useUserData()
+    // console.log("user", user.id)
     const history = useHistory()
     const CustomNotify = useCustomNotify();
-
     const screen = useSelector((state) => state.screenReducer.screens)
-
-
     const [checkUpdate, setCheckUpdate] = useState('')
     const [roleName, setRoleName] = useState('')
     const [hide, setHide] = useState(false)
-
-    // console.log("authData", authData)
     const [status, setStatus] = useState(true);
     const [text, setText] = useState(data.roleName);
     const [roleid, setRoleId] = useState(data.id)
@@ -85,152 +82,14 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
     const [loading, setLoading] = useState(false)
     const [multipleScreen, setMultipleScreen] = useState([])
     const [screenData, setScreenData] = useState('')
+    const [accessList, setAccessList] = useState([]);
+    const [display, setDisplay] = useState(false)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-
-    console.log("langField>>", langField)
-
-    console.log("text>>", text)
+    // const permissionlist = useSelector((state) => state.userAccessScreenReducer.data.permissions);
+    // console.log("permissionlist", permissionlist)
 
 
-
-
-    useEffect(() => {
-        // editHandler()
-
-        const tempArr = [];
-        screen.map((item) => {
-            console.log("temoaray item data", item)
-            tempArr.push({ name: item.screenName, id: item.id })
-        })
-        setMultipleScreen(tempArr)
-        console.log(tempArr)
-
-
-    }, [])
-
-    const getlAllUserRole = async () => {
-        const result = await dispatch(getRoleThunk());
-    };
-
-
-
-
-
-    const onSubmitHandler = async (e) => {
-        e.preventDefault()
-        const token = window.localStorage.getItem('token')
-        console.log(token)
-
-        data = {
-            roleName,
-        }
-        const result = await dispatch(addRoleThunck({ data, token }))
-        console.log(result)
-        if (result.payload === "Created") {
-            CustomNotify('role Created successfully', 'success');
-            //  alert("role Created successfully")
-            getlAllUserRole();
-            handleClose()
-        } else {
-            CustomNotify('something went  wrong', 'error');
-            // alert("something went  wrong")
-        }
-        console.log(result)
-
-
-    }
-
-    const updateHandler = async (text) => {
-        console.log("etxt", text)
-        // const id = user.id;
-        setLoading(true)
-
-        const data = {
-            roleName: text,
-            id: parseInt(roleid)
-
-        }
-
-        console.log("data", data)
-        const token = window.localStorage.getItem('token')
-
-        const result = await dispatch(updateRoleThunck({ data, token }))
-        console.log("result", result)
-
-        if (result.payload === "Updeted") {
-            CustomNotify("Role Updated Successfully", 'success')
-            // setText(roleName)
-
-            getlAllUserRole();
-
-
-        } else {
-            CustomNotify('Something went wrong!', 'error');
-        }
-
-
-        setLoading(false)
-        setStatus(true)
-
-    }
-    const onChange = (e) => {
-        console.log('e>>>>>>>>>>>', e.target.value)
-        setText(e.target.value)
-    }
-
-
-    const handleScreenClose = () => {
-        setSecreenOpen(false)
-    }
-
-    const handleScreenOpen = () => {
-        setSecreenOpen(true)
-    }
-    const onSelect = (selectedList, selectedItem) => {
-        console.log("list", selectedList)
-        console.log("list", selectedItem)
-        setScreenData(selectedList)
-    }
-
-    console.log('select item', screenData)
-    const addAceessScrenn = async (userRoleid) => {
-        setLoading(true);
-        console.log('aaaaa', screenData)
-        console.log("dddd", userRoleid)
-        const sdata = [];
-        screenData && screenData.map((s) => {
-            console.log("sss", s)
-            sdata.push(s.id);
-        })
-        console.log('final screen', sdata)
-
-
-
-        console.log('sdata', screenData)
-        const data = {
-            userRoleId: parseInt(roleid),
-            screenId: sdata.join(),
-            canAccess: true
-        }
-        console.log("data", data)
-        const token = window.localStorage.getItem('token')
-
-        const result = await dispatch(addScreenAccessThunk({ data, token }))
-        console.log("result", result)
-        setSecreenOpen(false)
-        setLoading(false);
-        if (result.payload === 'Created') {
-            CustomNotify('User succesfully created access screen', 'success');
-        } else {
-            CustomNotify('Something went wrong!', 'error');
-        }
-
-
-    }
-
-    const handleDelete = () => {
-        console.info('You clicked the delete icon.');
-    };
+    console.log("next", screen)
 
     const renderField = (value) => {
         let screenName = value;
@@ -244,6 +103,143 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
         return screenName;
     };
 
+    useEffect(() => {
+        // editHandler()
+        setScreenfatch();
+        // const tempArr = [];
+        // setScreenfatch()?.map((item) => {
+        //     console.log("temoaray item data", item)
+        //     tempArr.push({ name: item.screenName, id: item.id })
+        // })
+        // setMultipleScreen(tempArr)
+        // console.log(tempArr)
+
+
+    }, [renderField('UPDATE')])
+
+    useEffect(() => {
+        const tempArr = [];
+        data?.screens?.map((item) => {
+            tempArr.push({ name: renderField(item.screenName), id: item.id })
+        });
+        setScreenData(tempArr);
+    }, [data?.screens, renderField('UPDATE')])
+
+    const getlAllUserRole = async () => {
+        const result = await dispatch(getRoleThunk());
+    };
+
+    const setScreenfatch = async () => {
+
+        const result = await dispatch(fetchScreens())
+        const tempArr = [];
+        result?.payload?.map((item) => {
+            tempArr.push({ name: renderField(item.screenName), id: item.id })
+        })
+        setMultipleScreen(tempArr)
+        // return result.payload
+    }
+
+
+    const onSubmitHandler = async (e) => {
+        e.preventDefault()
+        const token = window.localStorage.getItem('token')
+        console.log(token)
+
+        data = {
+            roleName,
+        }
+        const result = await dispatch(addRoleThunck({ data, token }))
+        console.log(result)
+        if (result.payload === "Created") {
+            CustomNotify(renderField('role Created successfully'), 'success');
+            getlAllUserRole();
+            handleClose()
+        } else {
+            CustomNotify(renderField("something went wrong"), 'error');
+        }
+        console.log(result)
+
+    }
+
+    const updateHandler = async (text) => {
+        setLoading(true)
+        const data = {
+            roleName: text,
+            id: parseInt(roleid)
+        }
+        const token = window.localStorage.getItem('token')
+        const result = await dispatch(updateRoleThunck({ data, token }))
+        if (result.payload === "Updeted") {
+            CustomNotify(renderField('Role Updated Successfully'), 'success')
+            // setText(roleName)
+            getlAllUserRole();
+        } else {
+            CustomNotify(renderField("something went wrong"), 'error');
+        }
+        setLoading(false)
+        setStatus(true)
+    }
+    const onChange = (e) => {
+        setText(e.target.value)
+    }
+
+
+    const handleScreenClose = () => {
+        setSecreenOpen(false)
+    }
+
+    const handleScreenOpen = () => {
+        setSecreenOpen(true)
+    }
+    const onSelect = (selectedList, selectedItem) => {
+        setScreenData(selectedList)
+    }
+
+    const addAceessScrenn = async (userRoleid) => {
+        setLoading(true);
+        const sdata = [];
+        screenData && screenData.map((s) => {
+            sdata.push(s.id);
+        })
+
+
+        const data = {
+            userRoleId: parseInt(roleid),
+            screenId: sdata.join(),
+            canAccess: true
+        }
+        const token = window.localStorage.getItem('token')
+        const result = await dispatch(addScreenAccessThunk({ data, token }))
+        setSecreenOpen(false)
+        setLoading(false);
+        if (result.payload === 'Created') {
+            CustomNotify(renderField("User succesfully created access screen"), 'success');
+        } else {
+            CustomNotify(renderField("something went wrong"), 'error');
+        }
+
+
+    }
+
+    useEffect(() => {
+        permiRolelist();
+    }, [])
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = roleid;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "Roles");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn?false:true;
+    }
+
 
     return (
         <>
@@ -252,16 +248,17 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                 <Box boxShadow={3} >
                     <Card variant="outlined" style={{ padding: 10 }}>
                         <CardHeader
-
                             avatar={
                                 <Button
                                     variant="contained"
                                     color="primary"
-
                                     // className={classes.button}
                                     // startIcon={<AddIcon />}
                                     style={{ fontSize: 12, textTransform: 'capitalize' }}
                                     onClick={handleScreenOpen}
+                                    disabled={accessActionBtn('Add Screen')}
+
+
                                 >
                                     {renderField('Add Screens')}
                                     <AddCircleIcon style={{ marginLeft: 5 }} />
@@ -270,12 +267,12 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                             }
                             action={status ?
                                 <>
-
                                     <Button variant="contained"
                                         style={{ marginTop: 9, marginRight: 24, textTransform: 'capitalize', fontSize: 13 }}
                                         color="primary"
                                         // edge="start"
                                         // aria-label="open drawer"
+                                        disabled={accessActionBtn('Edit Role')}
                                         onClick={() => {
                                             setStatus(false)
                                         }}
@@ -315,8 +312,6 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                 </Typography>
                             }
 
-                            {/* <Chip label=" primary" style={{width:160}} className={classes.chip} onDelete={handleDelete}  color="primary" /> */}
-
                         </CardContent>
 
                         {
@@ -324,7 +319,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                 <Button variant="contained" style={{ marginRight: 80, marginLeft: 80, marginBottom: 10 }}
                                     onClick={() => updateHandler(text)} color="primary"
                                     disabled={loading} >
-                                    {loading ? <CircularProgress size={18} /> :   renderField("UPDATE") }
+                                    {loading ? <CircularProgress size={18} /> : renderField("UPDATE")}
 
                                 </Button>
                         }
@@ -336,6 +331,15 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                             // onClick={handleClick}
                             onDelete={handleDelete}
                         /> */}
+                        <div style={{ width: 300, overflow: 'hidden' }}>
+                            <div id="screenHorizontalView" style={{ width: '100%', height: '100%', display: 'flex', overflowY: 'hidden', paddingBottom: 5 }}>
+                                {
+                                    data?.screens?.map((item) => {
+                                        return <Chip key={item.id} label={renderField(item.screenName)} clickable onClick={() => history.push(item.screenUrl)} color="primary" style={{ marginRight: 10 }} />
+                                    })
+                                }
+                            </div>
+                        </div>
 
                     </Card>
                 </Box>
@@ -350,7 +354,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                     </DialogTitle>
                     <DialogContent >
                         <form noValidate autoComplete="on" onSubmit={onSubmitHandler}  >
-                            <TextField className={classes.formControl} id="outlined-basic"     label= {renderField("role")} style={{ width: '100%', marginBottom: 20 }}
+                            <TextField className={classes.formControl} id="outlined-basic" label={renderField("role")} style={{ width: '100%', marginBottom: 20 }}
                                 name="roleName" variant="outlined" onChange={(e) => setRoleName(e.target.value)} />
                             <Button
                                 type="submit"
@@ -375,15 +379,13 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
                             <Multiselect
                                 options={multipleScreen}
-
+                                selectedValues={screenData}
                                 onSelect={onSelect}
-
                                 displayValue="name"
                                 style={{
-
                                     searchBox: {
                                         fontSize: 10,
-                                        height: 50
+                                        padding: 10
                                     },
                                     inputField: {
                                         margin: 5
@@ -394,16 +396,12 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                     optionContainer: {
                                         border: '2 solid red',
                                         height: 'auto'
-
                                     },
                                     option: {
                                         color: '#ffffff',
                                         background: '#3f51b5',
                                         height: 'auto'
-
                                     },
-
-
                                 }}
                             />
                             <Button
@@ -420,22 +418,14 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                 }}
 
                             >
-                                {loading ? <CircularProgress size={18} /> :  renderField('SUBMIT') }
+                                {loading ? <CircularProgress size={18} /> : renderField('SUBMIT')}
 
                             </Button>
-
-
-
                         </form>
-
                     </DialogContent>
                 </div>
 
             </Dialog>
-
-
-
-
 
         </>
     )

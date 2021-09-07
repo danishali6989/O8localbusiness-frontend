@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { ActionComponent, AppConainer } from '../../../components'
+import { AppConainer } from '../../../components'
+import { confirmAlert } from 'react-confirm-alert';
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Edit from '@material-ui/icons/Edit';
 import { SignUp } from '../../../components';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAlluserDatathunk } from 'generic/src/redux/reducers/userReducer';
-import { useUserData } from '../../../hooks/useUserData'
-import { toggelStatusThunk } from 'generic';
+import { toggelStatusThunk, FiledGetAllLanguageThunk, getUserDataByIdThunk, getScreenAccessByUserRoleIdThunk } from 'generic';
 import { DailogeBox } from '../../../components/DailogBox';
 import { useCustomNotify } from '../../../components';
-import { useHistory } from 'react-router-dom';
+import { useUserData } from '../../../hooks/useUserData'
 
-//create your forceUpdate hook
-function useForceUpdate() {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => value + 1); // update the state to force render
-}
 
 const useStyles = makeStyles((theme) => ({
 
@@ -64,26 +63,25 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const UserManagement = () => {
+    let gridRef = useRef(null);
     let paramsData;
-    const history = useHistory()
+    const userData = useUserData();
+    console.log("userData", userData)
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
+    const permissionlist = useSelector((state) => state.userAccessScreenReducer.data);
+    console.log("permissionlist", permissionlist)
     const [userEditData, setUserEditData] = useState(null);
     const [passwrdData, setPasswrdData] = useState(null)
     const [refresh, setRefresh] = useState('')
     const user = useSelector((state) => state.userReducer.data)
-    const created = useSelector((state) => state.userReducer)
-    const forceData = useSelector((state) => state)
-    console.log("forceData>>", forceData)
     const classes = useStyles();
     const dispatch = useDispatch()
-    // const history = useHistory()
-    const authData = useUserData()
     const [open, setOpen] = useState(false);
     const [paswordOpen, setPaswordOpen] = useState(false)
     const [gridApi, setGridApi] = useState(null);
     const CustomNotify = useCustomNotify();
-    const [forceRender, setForceRender] = useState(false);
+
 
     const handleClickOpen = () => {
         setUserEditData(null)
@@ -105,10 +103,10 @@ export const UserManagement = () => {
     const onGridReady = (params) => {
         setGridApi(params.api);
         paramsData = params.api;
+        gridRef.current = params.api;
         params.api.showLoadingOverlay();
 
         const getAllData = async () => {
-            // dispatch(getRoleThunk())
             const result = await dispatch(getAlluserDatathunk())
             params.api.setRowData(result.payload);
         };
@@ -116,20 +114,9 @@ export const UserManagement = () => {
         params.api.sizeColumnsToFit();
     }
 
-    useEffect(async () => {
-        const token = window.localStorage.getItem('token')
-
-        const CompanyId = authData.CompanyId;
-
-        // dispatch(getRoleThunk())
-        const result = await dispatch(getAlluserDatathunk())
-        // newForcerData();
-
-    }, [forceRender])
-
     const customLoading = () => {
         return <CircularProgress color="primary" />
-    }
+    };
 
     const renderField = (value) => {
         let screenName = value;
@@ -142,211 +129,29 @@ export const UserManagement = () => {
         return screenName;
     };
 
-
-
-    const actionHeader = () => {
-        return (
-            <div style={{
-                display: 'flex',
-                flex: 1,
-                width: 160,
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginRight: 20,
-            }}>
-                {/* <label>{renderField('Edit')}</label>
-                <label>{renderField('Status')}</label>
-                <label>{renderField('Delete')}</label>
-                <label>{renderField('Psw')}</label> */}
-                <label>Edit</label>
-                <label>Status</label>
-                <label>Delete</label>
-                <label>Psw</label>
-            </div>
-        )
-    }
+    // useEffect(() => {
+    //     asscesslist();
+    // }, [])
 
 
 
-    // const newForcerData = async () => {
-    //     const result = await dispatch(setForceReducer())
-    //     console.log("result>>>", result.payload)
+    // const asscesslist = async () => {
+       
+    //     const result = await dispatch(getScreenAccessByUserRoleIdThunk())
+    //     console.log({ result })
     // }
 
-    const renderFirstNameField = () => {
-        let screenName = 'usr_FName';
-        if (langField) {
-            let filterField = langField.filter(i => i.field === 'usr_FName');
-            console.log({ filterField })
-            if (filterField.length > 0) {
-                screenName = filterField[0].description;
-            };
+    const accessPermission = (value) => {
+        let listdata = value
+        if (permissionlist) {
+            let filterPermission = permissionlist.filter(i => i.screenId === value).filter(i => i.screenId === 1)
+            console.log("filterPermission", filterPermission)
 
-        };
-        let name = renderField('usr_FName');
-        console.log({ screenName, name })
-        return (<>
-            <label>{name}</label>
-        </>)
-    };
-
-    const renderdata = (event, i) => {
-        const header = event
-        console.log({ header, i })
-        return (
-            <>
-                <label>{renderField('usr_FName')}</label>
-            </>
-        )
+        }
     }
-    var tempdata = []
-    var tempLocation = [];
-    var tempLocationObj = [];
-    var tempColor = []
-    var colors = [
-        { value: "#1dab43", name: 'Green' },
-        { value: "#cc1427", name: 'Red' },
-        { value: "#7f0c94", name: 'Purple' },
-        { value: "#2210c7", name: 'Blue' },
-        { value: "#eb0eca", name: 'Pink' },
-        { value: "#b7c223", name: 'Yellow' },
-    ]
-    colors.map((u, i) => {
-        tempColor.push(u.name)
-    })
-
-    function ActionCellRenderer(params) {
-        let eGui = document.createElement("div");
-        let editingCells = params.api.getEditingCells();
-        // checks if the rowIndex matches in at least one of the editing cells
-        let isCurrentRowEditing = editingCells.some((cell) => {
-            return cell.rowIndex === params.node.rowIndex;
-        });
-
-        const changeStatus = async (userData, process) => {
-            // setMsgOpen(true)
-            paramsData.showLoadingOverlay();
-            const token = window.localStorage.getItem('token')
-            const id = userData.id;
-            let status = 1;
-            if (userData.status === 2 || userData.status === 3) {
-                status = 1;
-            } else {
-                status = 2;
-            }
-            const data = {
-                status: status
-            }
-            const result = await dispatch(toggelStatusThunk({ data, id, token }))
-
-
-            if (result.payload === "Status Updated") {
-                const result = await dispatch(getAlluserDatathunk());
-                paramsData.setRowData(result.payload);
-
-                if (userData.status === 2 || userData.status === 3) {
-                    status = 1;
-                    CustomNotify("Status Activated  Successfully", "success");
-
-                } else if ((userData.status === 1 || userData.status === 3)) {
-                    status = 2;
-                    CustomNotify(" Deactivated  Successfully", "error");
-                }
-
-            } else {
-                CustomNotify("Something went Wrong", "error");
-                paramsData.hideOverlay();
-
-            }
-
-
-            //    gridApi.redrawRows();
-
-        }
-
-
-
-        const EditSubmitHandler = (data) => {
-            setUserEditData(data)
-            setOpen(true)
-        };
-
-
-        const deleteHandler = async (params) => {
-            paramsData.showLoadingOverlay();
-            // alert("<h1>Do you want to delete this user !!!</h1>")
-            const id = params.id
-            const token = window.localStorage.getItem('token')
-            let status = 1
-            if (params.status === 3) {
-                status = 1;
-            } else {
-                status = 3;
-
-            }
-            const data = {
-                status: status
-            }
-            const result = await dispatch(toggelStatusThunk({ data, id, token }))
-            if (result.payload == "Status Updated") {
-                const result = await dispatch(getAlluserDatathunk());
-                paramsData.setRowData(result.payload);
-                if (params.status === 3) {
-                    status = 1;
-                    CustomNotify("Activated  Successfully", "success");
-                } else if (params.status === 1) {
-                    status = 3;
-                    CustomNotify("Deleted Sucessfully", "success");
-                }
-
-            } else {
-                paramsData.hideOverlay();
-
-            }
-
-
-        }
-
-
-        const changePassword = (data) => {
-            setPaswordOpen(true)
-            setPasswrdData(data)
-
-        }
-        return (
-            <ActionComponent
-
-
-                handleEdit={() => {
-                    EditSubmitHandler(params.data)
-                }}
-                isChecked={params.data.status === 1 ? false : true}
-                isDeleted={params.data.status === 3 ? false : true}
-
-                handleDelete={() => { deleteHandler(params.data) }}
-                handleStatus={() => changeStatus(params.data)}
-                handlePassword={() => changePassword(params.data)}
-            />
-        )
-
-
-
-    }
-
-    const onRowValueChanged = (params) => {
-
-
-    };
-
-    const renderFieldName = (event) => {
-        const fieldName = event.colDef.field;
-        console.log({ fieldName })
-        return `<div>
-        </div>`
-    };
+    console.log({ accessPermission })
 
     const fieldRender = (event) => {
-        let color = ""
         if (event.colDef.field === "bg_color") {
 
             return `<div style="background-color:red;width:100%;height:100%;"></div>`;
@@ -377,54 +182,6 @@ export const UserManagement = () => {
     };
 
 
-    const cellStyle = (params) => {
-        if (params.data.status == "off") {
-            //Here you can check the value and based on that you can change the color
-            //mark police cells as red
-            return {
-                color: '#dddddd',
-                'padding-left': '0px',
-                'padding-right': '0px'
-            };
-        } else if (params.data.isDeleted === true) {
-            return {
-                'padding-left': '0px',
-                'padding-right': '0px'
-            }
-        } else {
-            return {
-                'padding-left': '0px',
-                'padding-right': '0px'
-            }
-        }
-    }
-    var tempdata = []
-    user && user.map((item, index) => {
-        tempdata.push({
-            app_id: item.app_id,
-            callStatus: false,
-            companyId: item.companyId,
-            companyName: null,
-            email: item.email,
-            finance_year: item.finance_year,
-            id: item.id,
-            image: null,
-            imageUrl: null,
-            ip_Address: item.ip_Address,
-            mobile: item.mobile,
-            otp: 0,
-            password: item.password,
-            roleId: item.roleId,
-            roleName: item.roleName,
-            status: item.status,
-
-            userName: item.userName,
-            full_Name: item.usr_FName + "  " + item.usr_LName,
-            usr_FName: item.usr_FName,
-            usr_LName: item.usr_LName,
-        });
-        return 0;
-    })
 
 
     const onActivated = () => {
@@ -436,7 +193,7 @@ export const UserManagement = () => {
 
             }, [500]);
         } else {
-            CustomNotify("No Activated User found", "error");
+            CustomNotify(renderField('No Activated User found'), "error");
             gridApi.setRowData();
             gridApi.hideOverlay();
         };
@@ -450,7 +207,7 @@ export const UserManagement = () => {
                 gridApi.setRowData(filteredDisabled);
             }, [500]);
         } else {
-            CustomNotify("No Disabled User found", "error");
+            CustomNotify(renderField('No Disabled User found'), "error");
             gridApi.setRowData();
             gridApi.hideOverlay();
         };
@@ -464,7 +221,7 @@ export const UserManagement = () => {
                 gridApi.setRowData(filteredDeleted);
             }, [500]);
         } else {
-            CustomNotify("No Deleted User found", "error");
+            CustomNotify(renderField('No Deleted User found'), "error");
             gridApi.setRowData();
             gridApi.hideOverlay();
         };
@@ -475,30 +232,169 @@ export const UserManagement = () => {
         gridApi.showLoadingOverlay();
         setTimeout(() => {
             gridApi.setRowData(user);
-
         }, [500]);
     };
 
-    function getColumnDefs() {
-        return [
-            { field: 'athlete' },
-            { field: 'age' },
-            { field: 'country' },
-            { field: 'sport' },
-            { field: 'year' },
-            { field: 'date' },
-            { field: 'gold' },
-            { field: 'silver' },
-            { field: 'bronze' },
-            { field: 'total' },
-        ];
+    const deleteHandler = async (params) => {
+        paramsData.showLoadingOverlay();
+        const id = params.id
+        const token = window.localStorage.getItem('token')
+        let status = params.status;
+        let textValue = 'Activated  Successfully'
+        if (params.status === 3) {
+            textValue = 'Activated  Successfully';
+            status = 1;
+        } else {
+            status = 3;
+            textValue = 'Deleted Sucessfully';
+        }
+        const data = {
+            status: status
+        };
+
+        const result = await dispatch(toggelStatusThunk({ data, id, token }));
+        const resultUser = await dispatch(getAlluserDatathunk());
+        if (result.payload == "Status Updated") {
+            const user = await fetchUserData();
+            if (user !== null && user !== undefined) {
+                const langId = user.payload?.langId;
+                let text = await changeLanguageField(langId, textValue);
+                CustomNotify(text, "success");
+            }
+            paramsData.setRowData(resultUser.payload);
+        } else {
+            paramsData.hideOverlay();
+        }
     }
+    const changePassword = (data) => {
+        setPaswordOpen(true);
+        setPasswrdData(data);
+    };
+
+    const editHandler = (data) => {
+        setUserEditData(data)
+        setOpen(true)
+    };
+
+    const fetchUserData = async () => {
+        if (userData !== null) {
+            const result = await dispatch(getUserDataByIdThunk({ id: userData.id }))
+            return result;
+        }
+        return null;
+    };
+
+    const fetchFields = async (id) => {
+        const token = window.localStorage.getItem('token')
+        const lang_id = id;
+        const result = await dispatch(FiledGetAllLanguageThunk(lang_id, token));
+        console.log("result....fetchFields", result)
+        return result;
+    };
+
+    const changeLanguageField = async (langId, value) => {
+        const fields = await fetchFields(langId);
+        let screenName = value;
+        if (fields.payload) {
+            let filterField = fields.payload.filter(i => i.field === value);
+            if (filterField.length > 0) {
+                screenName = filterField[0].description;
+            };
+        };
+        return screenName;
+    }
+
+    const changeStatus = async (userData) => {
+        paramsData.showLoadingOverlay();
+        const token = window.localStorage.getItem('token')
+        const id = userData.id;
+        let status = 1;
+        let textValue = 'Activated  Successfully';
+        if (userData.status === 2 || userData.status === 3) {
+            status = 1;
+            textValue = 'Activated  Successfully';
+        } else {
+            status = 2;
+            textValue = 'Deactivated  Successfully';
+        }
+        const data = {
+            status: status
+        }
+        const result = await dispatch(toggelStatusThunk({ data, id, token }));
+        const resultUser = await dispatch(getAlluserDatathunk());
+        if (result.payload === "Status Updated") {
+            const user = await fetchUserData();
+            console.log("user>>>", user)
+            if (user !== null && user !== undefined) {
+                const langId = user.payload?.langId;
+                let text = await changeLanguageField(langId, textValue);
+                CustomNotify(text, "success");
+            }
+            paramsData.setRowData(resultUser.payload);
+
+        } else {
+            CustomNotify(renderField('something went wrong'), "error");
+            paramsData.hideOverlay();
+        }
+    };
+
+    const editRender = (params) => {
+        return <IconButton
+            edge="start"
+            aria-label="open drawer"
+            variant="contained"
+            color="primary"
+            onClick={() => { editHandler(params.data) }}>
+            <Edit fontSize="small" />
+        </IconButton>;
+    };
+
+    const statusRender = (params) => {
+        return <FormControlLabel
+            control={
+                <Switch
+                    checked={params.data.status === 1 ? false : true}
+                    onChange={() => { changeStatus(params.data) }}
+                    color="primary"
+                    name="checkedB"
+                    label="Status"
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                    style={{ fontSize: 25 }}
+                />
+            }
+        />;
+    };
+
+    const deleteRender = (params) => {
+        return <FormControlLabel
+            control={
+                <Switch
+                    checked={params.data.status === 3 ? false : true}
+                    onChange={() => { deleteHandler(params.data) }}
+                    name="isdelete"
+                    style={{ fontSize: 20 }}
+                />
+            }
+        />;
+    };
+
+
+    const passwordRender = (params) => {
+        return <IconButton
+            edge="start"
+            aria-label="open drawer"
+            variant="contained"
+            color="primary"
+            onClick={() => { changePassword(params.data) }}
+        >
+            <VpnKeyIcon style={{ fontSize: 20 }} />
+        </IconButton>
+    };
 
 
     return (
-        <AppConainer screename={"User"} >
+        <AppConainer screename={"User"}>
             <Container maxWidth="lg" className={classes.container}>
-                {/* <h1>UserManagement</h1> */}
                 <div style={{ marginBottom: 10, marginTop: 20 }}>
                     <Button variant="contained" color="primary"
                         style={{ justifyContent: 'center', alignItems: 'center', fontSize: 12 }}
@@ -543,45 +439,43 @@ export const UserManagement = () => {
                     >
                         {renderField('SHOW ALL')}
                     </Button>
-
-
                 </div>
+
                 {/* AgGridReact  Table*/}
-                <div id="myGrid" className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"} style={{ height: 600, width: 1200, overflow: 'hidden', justifyContent: 'center', marginTop: 15 }}>
+                <div id="myGrid" className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"}
+                    style={{ height: 600, width: 1200, overflow: 'hidden', justifyContent: 'center', marginTop: 15 }}>
 
                     <AgGridReact
-
                         onGridReady={onGridReady}
-                        style={{ width: '100%', height: '100%' }}
+                        // style={{ width: '100%', height: '100%' }}
                         // gridOptions={gridOptions}
+                        // columnDefs={getColumnDefs}
+                        // deltaRowDataMode={true}
                         alwaysShowHorizontalScroll={true}
                         pagination={true}
-                        // columnDefs={getColumnDefs}
                         paginationPageSize="15"
-                        // deltaRowDataMode={true}
                         frameworkComponents={{
-                            actionCellRenderer: ActionCellRenderer,
-                            actionHeader: actionHeader,
-                            renderdata: renderdata,
-                            renderFirstNameField: renderFirstNameField,
+                            editRender: editRender,
+                            statusRender: statusRender,
+                            passwordRender: passwordRender,
+                            deleteRender: deleteRender,
                             customLoading: customLoading,
                             customLoadingOverlay: customLoading,
+
                         }}
                         rowData={null}
                         pagination={true}
                         loadingOverlayComponent={'customLoadingOverlay'}
-                        defaultColDef={{ resizable: true }} >
-
-
-                        {/* <AgGridColumn  field="Images" cellRenderer="ImageShow" sortable={true} filter="agTextColumnFilter"></AgGridColumn> */}
-                        <AgGridColumn field="usr_FName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="usr_LName" cellRenderer={fieldRender} label="Last Name" sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="userName" cellRenderer={fieldRender} label="UserName" sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="email" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="mobile" cellRenderer={fieldRender} style={{ width: 1050 }} sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="Action" style={{ width: 300 }} cellRenderer='actionCellRenderer' headerComponent="actionHeader" id={'id'}>
-                        </AgGridColumn>
-
+                        defaultColDef={{ resizable: true }}>
+                        <AgGridColumn alignItems='center' width={160} headerName={renderField('usr_FName')} field='usr_FName' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn alignItems='center' width={160} headerName={renderField('usr_LName')} field="usr_LName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn alignItems='center' width={180} headerName={renderField('userName')} field="userName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn alignItems='center' width={200} headerName={renderField('email')} field="email" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn alignItems='center' width={160} headerName={renderField('mobile')} field="mobile" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn alignItems='center' width={77} headerName={renderField('Edit')} cellRenderer='editRender' />
+                        <AgGridColumn alignItems='center' width={80} headerName={renderField('Status')} field="Status" cellRenderer='statusRender' />
+                        <AgGridColumn alignItems='center' width={80} headerName={renderField('Delete')} cellRenderer='deleteRender' />
+                        <AgGridColumn alignItems='center' width={100} headerName={renderField('Password')} cellRenderer='passwordRender' />
                     </AgGridReact>
                 </div>
 
@@ -609,6 +503,6 @@ export const UserManagement = () => {
                     onSubmitClose={() => { gridApi.hideOverlay(); }} />
 
             </Container>
-        </AppConainer>
+        </AppConainer >
     );
 }

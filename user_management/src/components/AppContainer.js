@@ -67,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
         ...theme.mixins.toolbar,
     },
     appBarIndex: {
-        // zIndex: true ? theme.zIndex.drawer + 1 :null,
         marginLeft: drawerWidth,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -76,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     appBar: {
-        // zIndex:  theme.zIndex.drawer + 1,
         marginLeft: drawerWidth,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -94,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
         //  width:1700,
 
         marginLeft: drawerWidth,
-        // width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -177,7 +174,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AppConainer = ({ children, screename, value, onForceRender, screen_name }) => {
-    const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
+    const screenByRole = useSelector(state => state.screenReducer.screensbyRole.screens);
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     const userDetailSelector = useSelector((state) => state.userReducer.userDetail);
     // const languageList = useSelector((state) => state.languageReducer.language);
@@ -259,6 +256,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                 body: data ? JSON.stringify(data) : null,
 
             });
+            console.log({ response })
             return response;
 
         } catch (error) {
@@ -289,8 +287,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                 setZIndex(false)
             }
         }
-        // onForceRender();
-        // history.push('user');
+
     };
 
     const fetchUserData = async () => {
@@ -312,17 +309,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
     };
 
 
-    // const renderField = (value) => {
-    //     let screenName = value;
-    //     if (langField) {
-    //         let filterField = langField.filter(i => i.field === value);
-    //         if (filterField.length > 0) {
-    //             console.log({ filterField })
-    //             screenName = filterField[0].description;
-    //         };
-    //     };
-    //     return screenName;
-    // };
+
 
     const renderField = (value) => {
         let screenName = value;
@@ -367,6 +354,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
             return (
 
                 <ListItem button
+                    key={item.id}
                     onClick={(event) => {
                         event.preventDefault();
                         history.push(item.screenUrl)
@@ -386,66 +374,6 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         return (
             <>
 
-                {/* <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/dashboard')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('Dashboard')}</ListItemText>
-                </ListItem>
-                <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/Report')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('Report')}</ListItemText>
-                </ListItem>
-                <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/roles')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('Roles')}</ListItemText>
-                </ListItem>
-                <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/screen')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('Screen')} </ListItemText>
-                </ListItem>
-                <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/Setting')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('Setting')} </ListItemText>
-                </ListItem>
-                <ListItem button
-                    onClick={(event) => {
-                        event.preventDefault();
-                        history.push('/user')
-                    }}>
-                    <ListItemIcon>
-                        <FiberManualRecordIcon style={{ color: '#fff', fontSize: 18 }} />
-                    </ListItemIcon>
-                    <ListItemText>{renderField('User')} </ListItemText>
-                </ListItem> */}
                 {screen}
                 <ListItem button
                     onClick={() => {
@@ -579,7 +507,6 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                         </div>
                     </List>
                     <Divider />
-                    {/* <List>{secondaryListItems}</List> */}
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />

@@ -15,11 +15,11 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { confirmAlert } from 'react-confirm-alert';
-import {  useHistory } from 'react-router-dom';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useSelector } from 'react-redux';
 import { useCustomNotify } from '../../../components'
-import { fetchScreens, ScreenAdd, EditScreenUpdate, deleteScreenid } from 'generic';
+import { useUserData } from '../../../hooks/useUserData'
+import { fetchScreens, ScreenAdd, EditScreenUpdate, deleteScreenid, FiledGetAllLanguageThunk, getUserDataByIdThunk, getScreenAccessByUserRoleIdThunk } from 'generic';
 
 
 
@@ -44,19 +44,14 @@ const useStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
             margin: theme.spacing(1),
-            // marginLeft :'7rem'
-            // margin-left: 20rem
-            // display: "flex",
-            // marginLeft:200
-            // flexDirection: "row",
-            // justifyContent: "left"
+
         },
     }
 }));
 
 export const Screen = () => {
     let paramsData;
-
+    const userData = useUserData();
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     const [screens, setSreens] = useState([])
     const [screenData, setScreenData] = useState([]);
@@ -64,15 +59,16 @@ export const Screen = () => {
     const [updateScreenCode, setUpdateScreenCode] = useState('');
     const [updateScreenURL, setUpdateScreenURL] = useState('');
     const [updatebox, setUpdatebox] = React.useState(false);
+    const [deletebox, setDeletebox] = React.useState(false);
     const [addScreenName, setAddScreenName] = useState('');
     const [addScreenCode, setAddScreenCode] = useState('');
     const [addScreenURL, setaddScreenURL] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [open, setOpen] = React.useState(false);
     const [token, setToken] = useState('');
     const [gridParams, setGridParams] = useState(null);
     const CustomNotify = useCustomNotify();
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
+    const [accessList, setAccessList] = useState([]);
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -84,7 +80,6 @@ export const Screen = () => {
 
     const getScreens = async () => {
         const result = await dispatch(fetchScreens());
-        console.log(result)
         return result;
 
     };
@@ -100,6 +95,7 @@ export const Screen = () => {
     const Updatehandleclose = () => {
         setUpdatebox(false)
     };
+
 
     const onchangeScreenName = (e) => {
         e.preventDefault();
@@ -136,107 +132,62 @@ export const Screen = () => {
             const getScreenData = await getScreens();
             const filterData = getScreenData.payload.filter(i => i.status !== 3 && i.status !== 2)
             gridParams.setRowData(filterData);
-            CustomNotify("Updated Successfully", "success");
+            CustomNotify(renderField('Updated Successfully'), "success");
         } else {
             gridParams.hideOverlay();
-            CustomNotify("something went wrong!", "error");
+            CustomNotify(renderField('something went wrong'), "error");
         }
 
     }
 
     const onGridReady = (params) => {
-
         paramsData = params.api;
         setGridParams(params.api)
         const getScreens = async () => {
             const result = await dispatch(fetchScreens());
+            console.log('result>>>', result)
             if (result) {
-                const filterData = result.payload.filter(i => i.status !== 3 && i.status !== 2)
+                const filterData = result?.payload.filter(i => i.status !== 3 && i.status !== 2)
                 params.api.setRowData(filterData);
+            } else {
+                params.api.setRowData([]);
             }
+
         }
 
         getScreens();
         params.api.sizeColumnsToFit();
     }
 
-    const confirmDeleted = (data) => {
-        confirmAlert({
-            title: 'Confirm to Delete',
-            message: 'Are you sure to do this.',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => screenDelete(data)
-                },
-                {
-                    label: 'No',
-                    // onClick: () => alert('Click No')
-                }
-            ]
-        });
-    }
-    const screenDelete = async (data) => {
 
+    const screenDelete = async (deleteData) => {
+        const user = await fetchUserData();
+
+        let deletedTxt = 'Deleted Successfully';
+        let sthTxt = 'something went wrong';
+        if (user) {
+            const langId = user.payload?.langId;
+            let fetchLangField = await fetchLanguageFields(langId);
+            deletedTxt = languageField(fetchLangField, deletedTxt);
+            sthTxt = languageField(fetchLangField, sthTxt);
+        }
         paramsData.showLoadingOverlay();
         const token = window.localStorage.getItem('token');
         const deletedata = {
-            id: data.id,
+            id: deleteData.id,
             token: token
         }
-
-
         const result = await dispatch(deleteScreenid(deletedata))
         if (result.payload === "deleted") {
             const getScreenData = await getScreens();
             const filterData = getScreenData.payload.filter(i => i.status !== 3 && i.status !== 2)
-            console.log('paramData', paramsData)
             paramsData.setRowData(filterData);
-            CustomNotify("Deleted Successfully", "success");
+            CustomNotify(deletedTxt, "success");
         } else {
             paramsData.hideOverlay();
-            CustomNotify("Something went wrong!", "error");
+            CustomNotify(sthTxt, "error");
         }
     }
-
-
-
-
-    const totalValueRender = (e) => {
-
-        return (
-            <>
-                <span >
-                    <IconButton
-                        edge="start"
-                        aria-label="open drawer"
-                        variant="contained" color="primary"
-                        onClick={() => buttonClicked(e.data)}
-                    >
-                        <Edit fontSize="small" />
-                    </IconButton>
-                </span>
-                <span >
-                    <IconButton
-                        edge="start"
-                        aria-label="open drawer"
-                        variant="contained" color="secondary"
-                        onClick={() => confirmDeleted(e.data)}
-                    >
-                        <DeleteOutline fontSize="small" />
-                    </IconButton>
-                </span>
-
-
-
-            </>
-
-        )
-    }
-
-
-
-
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -244,8 +195,6 @@ export const Screen = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -264,30 +213,16 @@ export const Screen = () => {
 
         if (result.payload === "Screen Created") {
             await dispatch(fetchScreens())
-
             const getScreenData = await getScreens();
-            console.log('getScreenDAta', getScreenData)
             const filterData = getScreenData.payload.filter(i => i.status !== 3 && i.status !== 2)
-
             gridParams.setRowData(filterData);
-            CustomNotify("Screen Added Successfully", "success");
+            CustomNotify(renderField('Screen Added Successfully'), "success");
         } else {
             gridParams.hideOverlay();
-            CustomNotify("Something went wrong!!", "error");
+            CustomNotify(renderField('something went wrong'), "error");
         }
 
     }
-
-
-    //     if (result.payload) {
-    //         alert("Add Sucessfully Data")
-    //         handleClose();
-    //     } else {
-    //         handleClose();
-    //     }
-    // }
-
-
 
 
     const screenName = (event) => {
@@ -329,6 +264,119 @@ export const Screen = () => {
                 <label>{renderField('screenName')}</label>
             </>
         )
+    };
+
+    const editRender = (params) => {
+        return <IconButton
+            edge="start"
+            aria-label="open drawer"
+            variant="contained" color="primary"
+            disabled={accessActionBtn('Edit Screen')}
+            onClick={() => buttonClicked(params.data)}>
+            <Edit fontSize="small" />
+        </IconButton>
+    };
+
+    const fetchUserData = async () => {
+        if (userData !== null) {
+            const result = await dispatch(getUserDataByIdThunk({ id: userData.id }))
+            return result;
+        }
+        return null;
+    };
+    const fetchFields = async (id) => {
+        const token = window.localStorage.getItem('token')
+        const lang_id = id;
+        const result = await dispatch(FiledGetAllLanguageThunk(lang_id, token));
+        return result;
+    };
+
+    const fetchLanguageFields = async (langId) => {
+        const fields = await fetchFields(langId);
+        if (fields.payload) {
+            return fields.payload;
+        };
+        return null;
+    };
+
+    const languageField = (langField, value) => {
+        let screenName = value;
+        if (langField) {
+            let filterField = langField.filter(i => i.field === value);
+            if (filterField.length > 0) {
+                screenName = filterField[0].description;
+            };
+        };
+        return screenName;
+    }
+
+    const deleteHandler = async (data) => {
+        const user = await fetchUserData();
+        let confirmTxt = 'Confirm to Delete';
+        let areYouSureTxt = 'Are you sure to do this.';
+        let yesTxt = 'Yes';
+        let noTxt = 'No';
+        let deletedTxt = 'Deleted Successfully';
+        let sthTxt = 'something went wrong';
+
+        if (user) {
+            const langId = user.payload?.langId;
+            let fetchLangField = await fetchLanguageFields(langId);
+            confirmTxt = languageField(fetchLangField, confirmTxt);
+            areYouSureTxt = languageField(fetchLangField, areYouSureTxt);
+            yesTxt = languageField(fetchLangField, yesTxt);
+            noTxt = languageField(fetchLangField, noTxt);
+            deletedTxt = languageField(fetchLangField, deletedTxt);
+            sthTxt = languageField(fetchLangField, sthTxt);
+        }
+
+
+        confirmAlert({
+            title: confirmTxt,
+            message: areYouSureTxt,
+            buttons: [
+                {
+                    label: yesTxt,
+                    onClick: () => screenDelete(data)
+                },
+                {
+                    label: noTxt,
+
+                }
+            ]
+        });
+
+
+
+    };
+
+    const deleteRender = (params) => {
+        return <IconButton
+            edge="start"
+            aria-label="open drawer"
+            variant="contained" color="secondary"
+            disabled={accessActionBtn('Delete Screen')}
+            onClick={() => deleteHandler(params.data)}>
+            <DeleteOutline fontSize="small" />
+        </IconButton>
+    };
+
+    useEffect(() => {
+        permiRolelist();
+    }, [])
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = userData.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "Screen");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn?false:true;
     }
 
     return (
@@ -339,21 +387,23 @@ export const Screen = () => {
                     <Button variant="contained" color="primary"
                         style={{ justifyContent: 'center', alignItems: 'center' }}
                         onClick={handleClickOpen}
+                        disabled={accessActionBtn('Add Screen')}
                     >
                         {renderField('ADD SCREEN')}
 
                     </Button>
                 </div>
 
-                <div className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"} style={{ height: 400, width: 1080, justifyContent: 'center', marginTop: 10 }}>
+                <div className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"} style={{ height: 400, width: 821, justifyContent: 'center', marginTop: 10 }}>
                     <AgGridReact
                         pagination={true}
                         defaultColDef={{ resizable: true }}
                         onGridReady={onGridReady}
                         frameworkComponents={{
-                            totalValueRender: totalValueRender,
                             changeData: changeData,
                             customLoadingOverlay: customLoading,
+                            editRender: editRender,
+                            deleteRender: deleteRender,
                         }}
 
                         loadingOverlayComponent={'customLoadingOverlay'}
@@ -361,11 +411,10 @@ export const Screen = () => {
 
 
                         rowData={null}>
-                        {/* <AgGridColumn field={renderField('id')} sortable={true} fontSize="small" filter="agTextColumnFilter"></AgGridColumn> */}
-                        <AgGridColumn field="screenName"  fontSize="small" sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        <AgGridColumn field="screenCode" fontSize="small" sortable={true} filter="agTextColumnFilter"></AgGridColumn>
-                        {/* <AgGridColumn field="screenUrl" fontSize="small" sortable={true} filter="agTextColumnFilter"></AgGridColumn> */}
-                        <AgGridColumn field="Action" cellRenderer="totalValueRender"></AgGridColumn>
+                        <AgGridColumn width={300} alignItems='center' headerName={renderField("screenName")} field="screenName" fontSize="small" sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn width={300} alignItems='center' headerName={renderField("screenCode")} field="screenCode" fontSize="small" sortable={true} filter="agTextColumnFilter" />
+                        <AgGridColumn width={100} alignItems='center' headerName={renderField("Edit")} field="Edit" cellRenderer="editRender" />
+                        <AgGridColumn width={100} alignItems='center' headerName={renderField("Delete")} field="Delete" cellRenderer="deleteRender" />
                     </AgGridReact>
 
                 </div>
@@ -419,29 +468,30 @@ export const Screen = () => {
 
 
                 </Dialog>
-                {/* <Updatemodelbox classes={classes} updatebox={updatebox} /> */}
-                {/* Update Screen */}
+
                 <Dialog open={updatebox} onClose={Updatehandleclose} aria-labelledby="form-dialog-title" style={{ padding: 20 }}>
-                    <DialogTitle id="form-dialog-title"> Update Screen </DialogTitle>
+                    <DialogTitle id="form-dialog-title">{renderField('Update Screen')} </DialogTitle>
 
 
                     <DialogContent>
                         <form noValidate autoComplete="off" style={{ marginRight: 20 }}>
                             <TextField className={classes.formControl}
-                                id="outlined-basic" label="Screen Name"
+                                id="outlined-basic" label={renderField('Screen Name')}
                                 variant="outlined"
                                 value={updateScreenName}
                                 onChange={onchangeScreenName}
                             />
 
                             <TextField className={classes.formControl}
-                                id="outlined-basic" label="Screen Code"
+                                label={renderField('screenCode')}
+                                id="outlined-basic"
                                 variant="outlined"
                                 value={updateScreenCode}
                                 onChange={onchangeScreenCode}
                             />
                             <TextField className={classes.formControl}
-                                id="outlined-basic" label="Screen URL"
+                                label={renderField('Screen Url')}
+                                id="outlined-basic"
                                 variant="outlined"
                                 value={updateScreenURL}
                                 onChange={onchangeScreenURL}
@@ -449,6 +499,7 @@ export const Screen = () => {
 
 
                             <div className={classes.root} style={{ display: "flex", marginLeft: 300 }}>
+
                                 <Button
                                     type="submit"
                                     variant="contained"
@@ -456,7 +507,7 @@ export const Screen = () => {
 
                                     onClick={UpdateSubmit}
                                 >
-                                    Update
+                                    {renderField('UPDATE')}
                                 </Button>
 
                                 <Button
@@ -465,24 +516,16 @@ export const Screen = () => {
                                     // color="#f5fafa"
                                     onClick={Updatehandleclose}
                                 >
-                                    Close
+                                    {renderField('CLOSE')}
                                 </Button>
 
                             </div>
                         </form>
                     </DialogContent>
                 </Dialog>
-
             </Container>
-
-
-
 
         </AppConainer >
 
     )
 }
-
-
-
-

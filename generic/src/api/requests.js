@@ -61,7 +61,6 @@ const get = async (url, token) => {
                 "Authorization": token ? `Bearer ${token}` : ''
             },
 
-
         },
     )
         .then((response) => {

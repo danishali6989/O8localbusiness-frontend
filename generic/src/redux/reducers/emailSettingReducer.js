@@ -75,63 +75,7 @@ export const getAllEmailDetailsThunk = createAsyncThunk(
     },
 );
 
-// export const EditScreenUpdate = createAsyncThunk(
-//     'screen/editScreen',
-//     async (data) => {
-//         try {
-//             const response = await EditScreen(data);
-//             if (response) {
-//                 return response;
-//             }
-//         } catch (err) {
-//             return Promise.reject('NETWORK_ERROR');
-//         }
-//     },
-// );
 
-// export const Newscreen = createAsyncThunk(
-//     'auth/NewScreenAdd',
-//     async (data) => {
-//         try {
-//             const response = await NewScreen(data);
-//             if (response) {
-//                 return response;
-//             }
-//         } catch (err) {
-//             return Promise.reject('NETWORK_ERROR');
-//         }
-//     },
-// );
-
-
-
-// export const fetchScreensbyRole = createAsyncThunk(
-//     'screen/list',
-//     async (data) => {
-//         try {
-//             const response = await getScreensbyRole(data);
-//             if (response) {
-//                 return response;
-//             }
-//         } catch (err) {
-//             return erro;
-//         }
-//     },
-// );
-
-// export const EmailSettingDelete = createAsyncThunk(
-//     'delete/user',
-//     async ({ id, token }) => {
-
-//         try {
-//             const response = await DeleteScreen({ id, token })
-//             return response
-
-//         }
-//         catch (err) {
-//         }
-//     }
-// )
 
 const emailSlice = createSlice({
     name: 'email',
@@ -159,18 +103,7 @@ const emailSlice = createSlice({
         [EmailSettingDeleteThunk.fulfilled]: (state, action) => {
             state.EmailDetailsDelete = action.payload;
         },
-        // [EditScreenUpdate.fulfilled]: (state, action) => {
-        //     state.token = action.payload;
-        //     state.isAuthenticate = true
-        // },
-        // [deleteScreenid.fulfilled]: (state, action) => {
-
-        //     state.ScreendataDelete = action.payload;
-        // },
-        // [fetchScreensbyRole.fulfilled]: (state, action) => {
-
-        //     state.screensbyRole = action.payload;
-        // },
+       
     }
 });
 export const {

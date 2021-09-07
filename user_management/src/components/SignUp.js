@@ -13,6 +13,7 @@ import { editUserThunk } from 'generic';
 import { useCustomNotify } from '../components'
 import ReCAPTCHA from 'react-google-recaptcha';
 
+
 const useStyles = makeStyles((theme) => ({
 
     paper: {
@@ -75,6 +76,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     const [companyId, setCompanyId] = useState('')
     // const token = window.localStorage.getItem('token')
     const [status, setStatus] = useState(false)
+    const langField = useSelector((state) => state.languageReducer.fieldlanguage);
     // const recaptchaRef = React.createRef();
 
     // console.log("isSubmit",isSubmit)
@@ -117,66 +119,66 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
         // if (status) {
 
-            handleClose(false)
-            onSubmitClick(e);
-            setIsSubmit(true)
+        handleClose(false)
+        onSubmitClick(e);
+        setIsSubmit(true)
 
-            const data = {
-                id: userid,
-                firstName,
-                lastName,
-                userName,
-                email,
-                password,
-                mobile,
-                roleId,
-                app_id,
-                finance_year,
-                ip_Address,
-                image,
-                companyId,
+        const data = {
+            id: userid,
+            firstName,
+            lastName,
+            userName,
+            email,
+            password,
+            mobile,
+            roleId,
+            app_id,
+            finance_year,
+            ip_Address,
+            image,
+            companyId,
+        }
+        const token = window.localStorage.getItem('token')
+
+        console.log("tokennnnnnnn", token)
+
+
+        if (userid > 0) {
+            const result = await dispatch(editUserThunk({ data, token }))
+
+            console.log(token)
+            if (result.payload === "User Updated") {
+                // alert("user successfully Updated")
+                onSuccess();
+                CustomNotify(renderField("User Updated Successfully"), "success");
+                handleClose(false)
+
+            } else {
+                CustomNotify(renderField("something went wrong"), "error");
+                handleClose(false)
+                onSubmitClose();
             }
+        } else {
             const token = window.localStorage.getItem('token')
 
-            console.log("tokennnnnnnn", token)
 
+            const result = await dispatch(doRegister({ data, token }))
 
-            if (userid > 0) {
-                const result = await dispatch(editUserThunk({ data, token }))
+            console.log("result", result)
+            if (result.payload === "User Created") {
+                // alert("user successfully created")
+                handleClose(false)
+                onSuccess();
+                CustomNotify(renderField("User Updated Successfully"), "success");
+                setRefresh(result.payload)
 
-                console.log(token)
-                if (result.payload === "User Updated") {
-                    // alert("user successfully Updated")
-                    onSuccess();
-                    CustomNotify("User Updated Successfully", "success");
-                    handleClose(false)
-
-                } else {
-                    CustomNotify("something went wrong!", "error");
-                    handleClose(false)
-                    onSubmitClose();
-                }
             } else {
-                const token = window.localStorage.getItem('token')
-
-
-                const result = await dispatch(doRegister({ data, token }))
-
-                console.log("result", result)
-                if (result.payload === "User Created") {
-                    // alert("user successfully created")
-                    handleClose(false)
-                    onSuccess();
-                    CustomNotify("User Created Successfully", "success");
-                    setRefresh(result.payload)
-
-                } else {
-                    // alert("something went wrong")
-                    CustomNotify("something went wrong!", "error");
-                    handleClose(false)
-                    onSubmitClose();
-                }
+                // alert("something went wrong")
+                CustomNotify(renderField("something went wrong"), "error");
+                handleClose(false)
+                onSubmitClose();
             }
+        }
 
         // }
 
@@ -188,6 +190,17 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     }
 
 
+
+    const renderField = (value) => {
+        let screenName = value;
+        if (langField) {
+            let filterField = langField.filter(i => i.field === value);
+            if (filterField.length > 0) {
+                screenName = filterField[0].description;
+            };
+        };
+        return screenName;
+    };
 
     const uploadImage = (e) => {
         var file = e.target.files[0]
@@ -209,22 +222,20 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
     return (
         <>
-
-
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" style={{ padding: 20 }}>
-                <DialogTitle id="form-dialog-title">{editData !== null ? 'Edit User' : 'Sign Up'}</DialogTitle>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" >
+                <DialogTitle id="form-dialog-title">{editData !== null ? renderField('Edit User') : renderField('Sign Up')}</DialogTitle>
                 {/* {console.log("ddd", images)} */}
 
                 {/* {images && <img src={images} style={{ width: 70, height: 70, position: 'relative', left: 250 }} alt="" />} */}
                 <DialogContent>
-                    <form noValidate autoComplete="on" onSubmit={onsubmit} style={{ marginRight: 20 }}>
+                    <form noValidate autoComplete="on" onSubmit={onsubmit}  >
 
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
                                 <TextField
                                     className={classes.formControl}
                                     id="outlined-basic"
-                                    label="firstname"
+                                    label={renderField('firstname')}
                                     name="firstName"
                                     value={firstName}
 
@@ -236,7 +247,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                 <TextField
                                     className={classes.formControl}
                                     id="outlined-basic"
-                                    label="lastname"
+                                    label={renderField('lastname')}
                                     name="lastName"
                                     value={lastName}
                                     variant="outlined"
@@ -250,7 +261,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="userName"
+                                            label={renderField('userName')}
                                             name="userName"
                                             value={userName}
                                             variant="outlined"
@@ -263,7 +274,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="userName"
+                                            label={renderField('userName')}
                                             name="userName"
                                             variant="outlined"
                                             onChange={(e) =>
@@ -278,7 +289,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                 <TextField
                                     className={classes.formControl}
                                     id="outlined-basic"
-                                    label="Email"
+                                    label={renderField('Email ')}
                                     name="email"
                                     value={email}
                                     variant="outlined"
@@ -293,7 +304,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="Mobile"
+                                            label={renderField('mobile')}
                                             name="mobile"
                                             value={mobile}
                                             variant="outlined"
@@ -308,7 +319,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                             <TextField
                                                 className={classes.formControl}
                                                 id="outlined-basic"
-                                                label="Password"
+                                                label={renderField('Password')}
                                                 name="password"
                                                 variant="outlined"
                                                 type="password"
@@ -319,7 +330,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                             <TextField
                                                 className={classes.formControl}
                                                 id="outlined-basic"
-                                                label="Mobile"
+                                                label={renderField('mobile')}
                                                 name="mobile"
                                                 value={mobile}
                                                 variant="outlined"
@@ -332,7 +343,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
                             <Grid item xs={12}>
                                 <FormControl variant="outlined" className={classes.formControl}>
-                                    <InputLabel id="demo-simple-select-outlined-label">Role</InputLabel>
+                                    <InputLabel id="demo-simple-select-outlined-label">{renderField('role')}</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-outlined-label"
                                         id="demo-simple-select-outlined"
@@ -342,13 +353,13 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
                                     >
                                         <MenuItem value="">
-                                            <em>Select</em>
+                                            <em>{renderField('Select')}</em>
                                         </MenuItem>
 
 
 
                                         {
-                                            roleData.length && roleData.map(item => {
+                                            roleData?.length && roleData?.map(item => {
                                                 return (
                                                     <MenuItem value={item.id}>{item.roleName}</MenuItem>
 
@@ -448,7 +459,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
                             editData !== null ? '' :
                                 <FormControl variant="outlined" className={classes.formControl}>
-                                    <InputLabel id="demo-simple-select-outlined-label">companyId</InputLabel>
+                                    <InputLabel id="demo-simple-select-outlined-label">{renderField('companyId')}</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-outlined-label"
                                         id="demo-simple-select-outlined"
@@ -459,11 +470,11 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                                         onChange={(e) => setCompanyId(e.target.value)}
                                     >
                                         <MenuItem value="">
-                                            <em>Select</em>
+                                            <em>{renderField('Select')}</em>
                                         </MenuItem>
-                                        <MenuItem value={1}>Microsoft</MenuItem>
-                                        <MenuItem value={1}>Google</MenuItem>
-                                        <MenuItem value={1}>Amezon</MenuItem>
+                                        <MenuItem value={1}>{renderField('Microsoft')}</MenuItem>
+                                        <MenuItem value={1}>{renderField('Google')}</MenuItem>
+                                        <MenuItem value={1}>{renderField('Amezon')}</MenuItem>
 
                                     </Select>
                                 </FormControl>
@@ -489,7 +500,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
 
                         >
-                            {isSubmit ? <CircularProgress /> : 'submit'}
+                            {isSubmit ? <CircularProgress /> : renderField('SUBMIT')}
                         </Button>
 
                     </form>

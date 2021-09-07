@@ -182,23 +182,19 @@ export const ActionComponent = ({
                                     inputProps={{ 'aria-label': 'primary checkbox' }}
                                     style={{ fontSize: 25 }}
                                 />}
-                        // label="Status"
                         />
 
                         <FormControlLabel
                             control={
                                 <Switch
                                     checked={!isdelete}
-                                    // onChange={isdelete?changeDeletemain:changeDeletemainActivate}
                                     onChange={isdelete ? changeDelete : changeDeleteActivate}
-                                    // onClick={()=> setpopup(false)}
                                     name="isdelete"
                                     style={{ fontSize: 20 }}
                                 />
 
 
                             }
-                        // label="Delete"
                         />
                         <IconButton
                             edge="start"
@@ -216,28 +212,7 @@ export const ActionComponent = ({
                     </>
             }
 
-            {/* <Dialog
-                open={msgOpen}
-                onClose={handlemsgBoxClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-
-                <DialogTitle id="alert-dialog-title">{"Do Want To Active status!!?"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                            {"Do Want To In-Active status"}
-          </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handlemsgBoxClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handlemsgBoxOpen} color="primary" autoFocus>
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog> */}
+           
         </div>
     );
 };

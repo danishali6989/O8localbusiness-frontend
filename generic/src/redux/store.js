@@ -12,6 +12,8 @@ import customThemeReducer from './reducers/customThemeReducer';
 import languageReducer from './reducers/languageReducer'
 import emailSettingReducer from './reducers/emailSettingReducer'
 import forceReducer from './reducers/forceReducer';
+import permissionReducer from './reducers/permissionReducer';
+import rolePermissionReducer from './reducers/rolePermissionReducer';
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
 
 export const createStoreAndPersistor = (storage) => {
@@ -31,7 +33,9 @@ export const createStoreAndPersistor = (storage) => {
                 emailSettingReducer,
                 customThemeReducer,
                 languageReducer,
-                forceReducer
+                forceReducer,
+                permissionReducer,
+                rolePermissionReducer
 
 
             }),

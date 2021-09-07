@@ -18,7 +18,7 @@ import {  useHistory } from 'react-router-dom';
 import { fetchScreensbyRole } from 'generic';
 import { useSelector } from 'react-redux'
 import jwtDecode from 'jwt-decode';
-import { doLogin } from 'generic';
+import { doLogin,doLoginstep1 } from 'generic';
 import { useDispatch } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
@@ -96,6 +96,7 @@ export const Login = () => {
         return () => {
 
         }
+       
     }, [])
     // console.log("authtoken",auth.token)
 
@@ -114,9 +115,10 @@ export const Login = () => {
         }
 
         const result = await dispatch(fetchScreensbyRole(data));
+        console.log({result})
         if (result.payload !== undefined) {
-            console.log("getScreensbyRole", result.payload[0].screenUrl)
-            history.push(result.payload[0].screenUrl);
+            console.log("getScreensbyRole", result.payload.screens[0].screenUrl)
+            history.push(result.payload.screens[0].screenUrl);
         } else {
             CustomNotify("Invalid Credentials", "error");
         }
@@ -162,6 +164,8 @@ export const Login = () => {
     //     setStatus(true)
     // }
 
+
+  
     return (
         <Grid container component="main" className={classes.root}>
             <CssBaseline />

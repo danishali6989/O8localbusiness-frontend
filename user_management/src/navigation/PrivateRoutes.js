@@ -7,15 +7,16 @@ import { useSelector } from 'react-redux';
 
 
 export const PrivateRoutes = ({ children, ...rest }) => {
-    const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
-    console.log({ rest, screenByRole })
+    useSelector(state => console.log(state))
+    const screenByRole = useSelector(state => state.screenReducer.screensbyRole?.screens);
     const useriD = useUserData();
+    console.log({ rest, screenByRole })
     const history = useHistory()
     const isAuthenticated = useriD;
     let status = false;
 
     if (screenByRole) {
-            screenByRole.map((item) => {
+        screenByRole.map((item) => {
             if (item.screenUrl === rest.path) {
                 status = true;
                 return;

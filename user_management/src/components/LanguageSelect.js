@@ -75,10 +75,9 @@ export const LanguageSelect = ({ onLanguageClick }) => {
         }}>
         <List style={{ width: 200 }}>
 
-          {langList !== undefined && langList !== null && Object.keys(langList).length !== 0 && langList.map(item => {
+          {langList !== undefined && langList !== null && Object.keys(langList).length !== 0 && langList.map((item, index) => {
             let check = (userLanguage?.langId !== null) ? (item.lang_id === userLanguage?.langId) ? true : false : false;
-            console.log("check", check)
-            return (<ListItem button key={item.id}>
+            return (<ListItem button key={index}>
               <ListItemText onClick={changeHandler.bind(this, { item })}
                 style={{ color: check ? 'blue' : null }}
                 primary={renderField(item.lang_name)} />

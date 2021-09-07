@@ -19,8 +19,9 @@ import { Button } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import Paper from "@material-ui/core/Paper";
 import Edit from "@material-ui/icons/Edit";
-import { EmailSettingAddThunk, getAllEmailDetailsThunk, EmailSettingUpdateThunk, EmailSettingDeleteThunk } from 'generic';
+import { EmailSettingAddThunk, getAllEmailDetailsThunk, EmailSettingUpdateThunk, EmailSettingDeleteThunk, getScreenAccessByUserRoleIdThunk } from 'generic';
 import { useCustomNotify } from '../../../components'
+import { useUserData } from '../../../hooks/useUserData'
 
 
 
@@ -117,6 +118,8 @@ export const Setting = () => {
     })
     const EmailList = useSelector(state => state.emailSettingReducer);
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
+    const userData = useUserData();
+    const [accessList, setAccessList] = useState([]);
 
     console.log("emailID", emailData.id)
 
@@ -208,9 +211,9 @@ export const Setting = () => {
             const getScreenData = await emailGet();
             const getListEmail = getScreenData.payload
             console.log("getListEmail", getListEmail)
-            CustomNotify("Added Successfully", "success");
+            CustomNotify(renderField('Added Successfully'), "success");
         } else {
-            CustomNotify("Something went wrong", "error");
+            CustomNotify(renderField('something went wrong'), "error");
         }
 
     }
@@ -234,9 +237,9 @@ export const Setting = () => {
         console.log("getListEmail", getListEmail)
         if (result.payload === "EmailSetting Updated") {
 
-            CustomNotify("Updated Successfully", "success");
+            CustomNotify(renderField('Updated Successfully'), "success");
         } else {
-            CustomNotify("Something went wrong", "error");
+            CustomNotify(renderField('something went wrong'), "error");
         }
     }
 
@@ -251,10 +254,10 @@ export const Setting = () => {
             const getScreenData = await emailGet();
             const getListEmail = getScreenData.payload
             console.log("getListEmail", getListEmail)
-            CustomNotify(" Deleted Successfully", "success");
+            CustomNotify(renderField('Deleted Successfully'), "success");
 
         } else {
-            CustomNotify("Something went wrong", "error");
+            CustomNotify(renderField('something went wrong'), "error");
         }
     }
 
@@ -272,6 +275,24 @@ export const Setting = () => {
     };
 
 
+    useEffect(() => {
+        permiRolelist();
+    }, [])
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = userData.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "Setting");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn?false:true;
+    }
+
 
 
     return (
@@ -281,8 +302,8 @@ export const Setting = () => {
                 {
                     newStatus &&
 
-                    <Button variant="contained" color="primary" style={{ marginTop: 30 }} onClick={handleClickOpen}>
-                      {renderField('ADD EMAIL')} 
+                    <Button variant="contained" color="primary" style={{ marginTop: 30 }} onClick={handleClickOpen} disabled={accessActionBtn('Add Email')}>
+                        {renderField('ADD EMAIL')}
                     </Button>
                 }
 
@@ -313,7 +334,7 @@ export const Setting = () => {
                                                         fontWeight="bold"
                                                         style={{ paddingTop: "1.5rem", paddingLeft: "1rem", paddingRight: "2rem", fontSize: "1.3rem", color: "white" }}
                                                     >
-                                                      {renderField('Edit Email Setting')}
+                                                        {renderField('Edit Email Setting')}
                                                     </Typography>
                                                 )}
 
@@ -339,6 +360,7 @@ export const Setting = () => {
                                                                     onClick={() => {
                                                                         setStatus(false);
                                                                     }}
+                                                                    disabled={accessActionBtn('Edit Email')}
                                                                 >
                                                                     <Edit style={{ fontSize: "1.5rem", color: "white", marginTop: ".5rem" }} />
                                                                 </IconButton>
@@ -353,6 +375,7 @@ export const Setting = () => {
                                                                     setStatus(true);
                                                                 }}
                                                                 style={{ background: "danger" }}
+                                                                disabled={accessActionBtn('Delete Email')}
                                                             >
                                                                 <CancelIcon style={{ background: "danger" }} />
                                                             </IconButton>
@@ -387,7 +410,7 @@ export const Setting = () => {
 
 
                                                         <TextField className={classes.formControl}
-                                                            id="outlined-basic"  label={renderField("Password")}
+                                                            id="outlined-basic" label={renderField("Password")}
                                                             type="password"
                                                             value={emailData.password}
                                                             variant="outlined"
@@ -439,7 +462,7 @@ export const Setting = () => {
 
                                                             : <Grid item xs={12}>
                                                                 <TextField className={classes.formControl}
-                                                                    id="outlined-basic"label={renderField("SMTP")}
+                                                                    id="outlined-basic" label={renderField("SMTP")}
                                                                     onChange={onSmtp}
                                                                     defaultValue={emailData.smtp}
                                                                     variant="outlined"
@@ -492,8 +515,8 @@ export const Setting = () => {
                                                             onClick={updateEmail}
                                                             style={{ background: "#3f51b5", color: "white", marginTop: 20 }}
                                                         >
-                                                        {renderField("UPDATE")}
-                                                           
+                                                            {renderField("UPDATE")}
+
                                                         </Button>
                                                     ) : null
                                                 }
@@ -531,7 +554,7 @@ export const Setting = () => {
                             <CssBaseline />
                             <div className={classes.paper}>
                                 <Typography component="h1" variant="h5">
-                                    Email Setting
+                                    {renderField('Email Setting')}
                                 </Typography>
                                 <form className={classes.form} noValidate>
                                     <Grid container spacing={2}>
@@ -543,7 +566,7 @@ export const Setting = () => {
                                                 required
                                                 fullWidth
                                                 id="email"
-                                                label="Email"
+                                                label={renderField("Email ")}
                                                 autoFocus
                                                 onChange={onEmail}
                                             />
@@ -554,7 +577,7 @@ export const Setting = () => {
                                                 required
                                                 fullWidth
                                                 name="password"
-                                                label="Password"
+                                                label={renderField("Password")}
                                                 type="password"
                                                 id="password"
                                                 autoComplete="current-password"
@@ -568,7 +591,7 @@ export const Setting = () => {
                                                 required
                                                 fullWidth
                                                 id="smtp"
-                                                label="SMTP"
+                                                label={renderField("SMTP")}
                                                 name="SMTP"
                                                 autoComplete="email"
                                                 onChange={onSmtp}
@@ -580,7 +603,7 @@ export const Setting = () => {
                                                 required
                                                 fullWidth
                                                 id="portNumber"
-                                                label="PortNumber"
+                                                label={renderField("Port Number")}
                                                 name="PortNumber"
                                                 autoComplete="email"
                                                 onChange={onPortnumber}
@@ -588,7 +611,7 @@ export const Setting = () => {
                                         </Grid>
                                         <TextField
                                             id="outlined-multiline-static"
-                                            label="Description"
+                                            label={renderField("Description")}
                                             multiline
                                             rows={6}
                                             variant="outlined"
@@ -611,14 +634,14 @@ export const Setting = () => {
                                     onClick={settingEmail}
 
                                 >
-                                    Save
+                                    {renderField('Save')}
                                 </Button>
                                 <Button
                                     style={{ background: "#f21505", color: "#f5fafa" }}
                                     variant="contained"
                                     onClick={handleClose}
                                 >
-                                    Close
+                                    {renderField('Close')}
                                 </Button>
                             </DialogActions>
                         </DialogContent>

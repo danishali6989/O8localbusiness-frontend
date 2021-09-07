@@ -42,7 +42,7 @@ export const NewCard = () => {
     const [addrole, setAddrole] = useState([]);
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
 
-    console.log("")
+    
     useEffect(() => {
         DataAdd();
     }, [])
@@ -113,41 +113,7 @@ export const NewCard = () => {
             }
 
 
-            {/* {addrole.map((item, index) => {
-
-
-                return (
-
-                    <  Grid key={index} className={classes.root}  >
-                        <Card variant="outlined">
-                            <CardHeader
-                                action={
-                                    <IconButton
-                                        edge="start"
-                                        aria-label="open drawer"
-                                        variant="contained" color="primary"
-                                    >
-                                        <Edit />
-                                    </IconButton>
-                                }
-                            />
-                            <CardContent className={classes.newcss}  >
-                                <Typography variant="h5" component="h2">
-                                    Role ID:{item.keyInt}
-                                </Typography>
-                                <Typography className={classes.pos} color="textSecondary">
-                                    Role Name:{item.value}
-                                </Typography>
-
-                            </CardContent>
-
-                        </Card>
-                    </ Grid >
-
-
-
-                )
-            })} */}
+           
 
         </>
     )

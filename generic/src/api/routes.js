@@ -6,6 +6,12 @@ const login = async ({ data }) => {
     return result;
 };
 
+const loginstep1 = async ({ data }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/UserLoginTwoStep1', { data });
+    return result;
+};
+
+
 const userlogoutbyId = async ({ id }) => {
 
     console.log("checkResult", id)
@@ -153,8 +159,8 @@ const FieldGetAll = async () => {
     return result;
 }
 
-const FieldDetailsbylanguage = async (lang_id,token) => {
-    const result = await get(getAppConfiguration().BASE_URL + `Field/get-Field-detail-By-Language?lang_id=${lang_id}`,token);
+const FieldDetailsbylanguage = async (lang_id, token) => {
+    const result = await get(getAppConfiguration().BASE_URL + `Field/get-Field-detail-By-Language?lang_id=${lang_id}`, token);
     return result;
 }
 
@@ -174,7 +180,6 @@ const EmailSettingUpdate = async ({ data, token }) => {
 
 const EmailSettingDelete = async ({ id, token }) => {
     const result = await post(getAppConfiguration().BASE_URL + `EmailSetting/delete/${id}`, { token });
-    console.log("resultEmail")
     return result;
 }
 
@@ -183,6 +188,37 @@ const getAllEmailDetails = async () => {
     const result = await get(getAppConfiguration().BASE_URL + 'EmailSetting/get-all');
     return result;
 };
+
+const getAllPermissions = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'Permi/get-all');
+    return result;
+};
+
+const AddPermission = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'Permi/add', { data, token });
+    console.log("resultEmail")
+    return result;
+}
+
+const GetAllPermission = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + 'Permi/get-all');
+    return result;
+};
+
+const EditPermission = async (data, token) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'Permi/edit', { data, token });
+    return result;
+}
+
+const DeletePermission = async ({ id, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + `Permi/delete/${id}`, { token });
+    return result;
+}
+const AddRolePermission = async ({ data, token }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'RolePermi/add', { data, token });
+    return result;
+}
+
 
 export {
     login,
@@ -215,6 +251,12 @@ export {
     EmailSettingUpdate,
     EmailSettingDelete,
     FieldGetAll,
-    FieldDetailsbylanguage
-
+    FieldDetailsbylanguage,
+    loginstep1,
+    AddPermission,
+    GetAllPermission,
+    getAllPermissions,
+    EditPermission,
+    DeletePermission,
+    AddRolePermission
 };

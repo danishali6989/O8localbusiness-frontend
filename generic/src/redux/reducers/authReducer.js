@@ -4,7 +4,7 @@ import {
     createAsyncThunk,
     createEntityAdapter,
 } from '@reduxjs/toolkit';
-import { login, register, forgotPassword, chnagePassword, userlogoutbyId } from '../../api/routes';
+import { login, register, forgotPassword, chnagePassword, userlogoutbyId, loginstep1 } from '../../api/routes';
 const authAdapter = createEntityAdapter();
 
 const initialState = authAdapter.getInitialState({
@@ -23,6 +23,21 @@ export const doLogin = createAsyncThunk(
     async ({ data }) => {
         try {
             const response = await login({ data });
+            if (response) {
+
+                return response;
+            }
+        } catch (err) {
+            return err;
+        }
+    },
+);
+
+export const doLoginstep1 = createAsyncThunk(
+    'auth/Loginstep1',
+    async ({ data }) => {
+        try {
+            const response = await loginstep1({ data });
             if (response) {
 
                 return response;
@@ -136,7 +151,10 @@ const authSlice = createSlice({
             state.token = action.payload;
             state.isAuthenticate = true
         },
-
+        [doLoginstep1.fulfilled]: (state, action) => {
+            state.token = action.payload;
+            state.isAuthenticate = true
+        },
         [forgotPasswordThunk.fulfilled]: (state, action) => {
             state.pasw = action.payload
         },

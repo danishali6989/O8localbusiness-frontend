@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { AssignRole, DashBoard, ForgotPassword, Login, Report, Screen, Userlogin, UserManagement, Setting } from '../pages';
+import { AssignRole, DashBoard, ForgotPassword, Login, Report, Screen, Userlogin, AssignPermission, Permission, UserManagement, Setting } from '../pages';
 import { PrivateRoutes } from './PrivateRoutes';
 import { useUserData } from '../hooks/useUserData';
 import { createBrowserHistory } from 'history'
@@ -22,6 +22,15 @@ export const CommonRouter = () => {
                 <PrivateRoutes exact path='/Report' component={Report} handler={Report} />
                 <PrivateRoutes path="/user" component={UserManagement} handler={UserManagement} /> */}
 
+
+                <PrivateRoutes exact path='/permission'>
+                    <Permission />
+                </PrivateRoutes>
+
+
+                <PrivateRoutes exact path='/assignPermission'>
+                    <AssignPermission />
+                </PrivateRoutes>
 
                 <PrivateRoutes exact path='/Setting'>
                     <Setting />
@@ -51,9 +60,11 @@ export const CommonRouter = () => {
                     <UserManagement />
                 </PrivateRoutes>
 
+
                 <PrivateRoutes exact path='/'>
                     <DashBoard />
                 </PrivateRoutes>
+
 
                 <Route exact path='/Userlogin' component={Userlogin} />
                 <Route exact path='/ForgotPassword' component={ForgotPassword} />

@@ -6,7 +6,8 @@ export {
   forgotPasswordThunk,
   changePasswordThunk,
   userlogoutbyIdThunk,
-  clearAuthReducer
+  clearAuthReducer,
+  doLoginstep1
 } from './src/redux/reducers/authReducer';
 
 export {
@@ -14,8 +15,16 @@ export {
   clearUserState
 } from './src/redux/reducers/userReducer';
 
+export {
+  PermissionAddThunk,
+  GetAllPermissionThunk,
+  PermissionEditThunk,
+  DeletePermissionThunk
+} from './src/redux/reducers/permissionReducer'
 
-
+export {
+  AddPermissionAddThunk
+} from './src/redux/reducers/rolePermissionReducer'
 
 export {
   setCustomTheme,

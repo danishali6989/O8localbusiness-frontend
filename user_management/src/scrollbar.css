@@ -1,0 +1,23 @@
+#screenHorizontalView {
+  position: relative;
+}
+#screenHorizontalView::-webkit-scrollbar-track
+{
+	background-color: transparent;
+}
+
+#screenHorizontalView::-webkit-scrollbar
+{
+	width: 2px;
+  height: 2px;
+	background-color: transparent;
+}
+
+#screenHorizontalView::-webkit-scrollbar-thumb
+{
+	background-color: transparent;
+}
+
+#screenHorizontalView:hover::-webkit-scrollbar-thumb{
+  background-color: #DCDCDC;
+}

@@ -1,36 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { AppConainer } from '../../../components';
-import { Container } from '@material-ui/core';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { useDispatch, useSelector } from 'react-redux';
 import { RoleCard } from '../../../components/roleCard'
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { useUserData } from '../../../hooks/useUserData';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { getScreenAccessByUserRoleIdThunk, fetchScreens } from 'generic'
 
 const useStyles = makeStyles((theme) => ({
 
-    // scroll: {
-    //     overflowY: 'hidden',
-    //     '&::-webkit-scrollbar': {
-    //         width: '0.4em'
-    //     },
-    //     '&::-webkit-scrollbar-track': {
-    //         boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-    //         webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-    //     },
-    //     '&::-webkit-scrollbar-thumb': {
-    //         backgroundColor: 'rgba(0,0,0,.1)',
-    //         outline: '1px solid slategrey'
-    //     }
-    // },
+   
     root: {
         minWidth: 275,
         display: 'inline-block',
@@ -78,13 +58,12 @@ export const AssignRole = () => {
     const dispatch = useDispatch();
     const classes = useStyles()
     const [open, setOpen] = React.useState(false);
-    const user = useUserData()
+    const user = useUserData();
     const [screenId, setScrennId] = useState('')
     const getuserRoll = useSelector((state) => state.userReducer.role)
-    console.log("getuserRoll", getuserRoll)
     const screen = useSelector((state) => state.screenReducer)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-    console.log("getrollList", getuserRoll)
+    const [accessList, setAccessList] = useState([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -96,28 +75,21 @@ export const AssignRole = () => {
 
     const getScreens = async () => {
         const result = await dispatch(fetchScreens());
-        console.log('resultScreen>>>', result)
         return result.payload;
     };
 
+    const fitlerScreenData = async () => {
+        // find role id
+        // find permission list using roled id  => 3       
+    };
+
     useEffect(async () => {
-        console.log(user)
+
         const id = user.id;
         const token = window.localStorage.getItem('token')
-        console.log(token)
         const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }))
-        console.log("result", result.payload)
-        // getScreens();
-        // const tempArr = [];
-        // screen.map((item)=>{
-        //         console.log(item)
-        //     tempArr.push({name:item.screenName, id:item.id})
 
 
-        //         setScrennId(item.id)
-
-
-        //     })
 
     }, [])
 
@@ -127,12 +99,29 @@ export const AssignRole = () => {
         if (langField) {
             let filterField = langField.filter(i => i.field === value);
             if (filterField.length > 0) {
-                console.log({ filterField })
                 screenName = filterField[0].description;
             };
         };
         return screenName;
     };
+
+    useEffect(() => {
+        permiRolelist();
+    }, [])
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = user.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "Roles");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn?false:true;
+    }
 
     return (
         <>
@@ -149,21 +138,19 @@ export const AssignRole = () => {
                             startIcon={<AddIcon />}
                             // style={{marginBottom:20}}
                             onClick={handleClickOpen}
+                            disabled={accessActionBtn('Add Role')}
                         >
                             {renderField('ADD ROLE')}
 
                         </Button>
 
                     </div>
-                    {getuserRoll.length > 0 && getuserRoll.map((item, index) => {
+                    {getuserRoll?.length > 0 && getuserRoll.map((item, index) => {
                         return (
                             <RoleCard key={index} data={item} handleClose={handleClose} open={open} setOpen={setOpen} />
                         )
                     })}
                 </div>
-
-
-
 
 
             </AppConainer>

@@ -3,6 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import {useSelector} from 'react-redux';
 import { Button, Grid, makeStyles, TextField } from '@material-ui/core';
 import { useUserData } from '../hooks/useUserData';
 // import { useDispatch } from 'react-redux';
@@ -25,7 +26,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        // width: '100%',
+        width:500,
+         // Fix IE 11 issue.
         marginTop: theme.spacing(2),
 
     },
@@ -69,9 +72,20 @@ export const DailogeBox = ({
     const [adminPassword, setAdminPassword] = useState('');
     const [adminid, setAdminid] = useState('');
     const [newPassword, setNewPassword] = useState('')
-
+    const langField = useSelector((state) => state.languageReducer.fieldlanguage);
     const admin = useUserData();
 
+
+    const renderField = (value) => {
+        let screenName = value;
+        if (langField) {
+            let filterField = langField.filter(i => i.field === value);
+            if (filterField.length > 0) {
+                screenName = filterField[0].description;
+            };
+        };
+        return screenName;
+    };
 
     return (
 
@@ -80,16 +94,15 @@ export const DailogeBox = ({
                 pass &&
                 <>
                     <Dialog open={paswordOpen} onClose={handlePasswordClose} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title">Change Password</DialogTitle>
+                        <DialogTitle id="form-dialog-title">{renderField('Change Password')}</DialogTitle>
                         <DialogContent>
-                            <form noValidate autoComplete="on" className={classes.form}>
+                            <form noValidate autoComplete="on" style={{padding:20}} className={classes.form}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="Admin password"
-
+                                            label={renderField('Admin password')}
                                             variant="outlined"
                                             onChange={(e) => setAdminPassword(e.target.value)}
                                         />
@@ -99,7 +112,7 @@ export const DailogeBox = ({
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="New password"
+                                            label={renderField('New password')}
                                             onChange={(e) => setAdminid(e.target.value)}
                                             variant="outlined"
                                         />
@@ -109,7 +122,7 @@ export const DailogeBox = ({
                                         <TextField
                                             className={classes.formControl}
                                             id="outlined-basic"
-                                            label="Change password"
+                                            label={renderField('Change Password')}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             variant="outlined"
                                         />
@@ -134,7 +147,7 @@ export const DailogeBox = ({
                                 }}
 
                             >
-                                {'submit'}
+                                {renderField('SUBMIT')}
                             </Button>
                         </DialogActions>
                     </Dialog>

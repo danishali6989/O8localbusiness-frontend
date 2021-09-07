@@ -1,6 +1,3 @@
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { FormControl, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
@@ -36,8 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
     container: {
         width: '100%',
-        // paddingTop: theme.spacing(1),
-        // paddingBottom: theme.spacing(1),
+       
     },
     formControl: {
         margin: theme.spacing(1),
@@ -228,9 +224,7 @@ export const EditUser = ({ handleClose, open }) => {
 
                     <TextField className={classes.formControl} id="outlined-basic" label="companyId" value={companyId} name="companyId" variant="outlined" onChange={(e) => setCompanyId(e.target.value)} />
 
-                    {/* <TextField type="file" className={classes.formControl}
-                                onChange={onHandleImageChange}
-                                id="outlined-basic" variant="outlined" label={images ? 'File' : null} />  */}
+                   
 
                     <Button
                         type="submit"
