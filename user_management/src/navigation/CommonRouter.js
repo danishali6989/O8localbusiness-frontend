@@ -60,11 +60,9 @@ export const CommonRouter = () => {
                     <UserManagement />
                 </PrivateRoutes>
 
-
                 <PrivateRoutes exact path='/'>
                     <DashBoard />
                 </PrivateRoutes>
-
 
                 <Route exact path='/Userlogin' component={Userlogin} />
                 <Route exact path='/ForgotPassword' component={ForgotPassword} />

@@ -68,6 +68,8 @@ export const UserManagement = () => {
     const userData = useUserData();
     console.log("userData", userData)
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
+    const permissions = useSelector(({ screenReducer }) => screenReducer.screensbyRole);
+    console.log("state", permissions)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
     const permissionlist = useSelector((state) => state.userAccessScreenReducer.data);
     console.log("permissionlist", permissionlist)
@@ -80,6 +82,8 @@ export const UserManagement = () => {
     const [open, setOpen] = useState(false);
     const [paswordOpen, setPaswordOpen] = useState(false)
     const [gridApi, setGridApi] = useState(null);
+    const [accessList, setAccessList] = useState([]);
+    console.log("accessList>>>>", accessList)
     const CustomNotify = useCustomNotify();
 
 
@@ -129,27 +133,27 @@ export const UserManagement = () => {
         return screenName;
     };
 
-    // useEffect(() => {
-    //     asscesslist();
-    // }, [])
+    useEffect(() => {
+        permiRolelist();
 
+    }, [])
 
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = userData.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        console.log("result>>>", result)
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "User");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
 
-    // const asscesslist = async () => {
-       
-    //     const result = await dispatch(getScreenAccessByUserRoleIdThunk())
-    //     console.log({ result })
-    // }
-
-    const accessPermission = (value) => {
-        let listdata = value
-        if (permissionlist) {
-            let filterPermission = permissionlist.filter(i => i.screenId === value).filter(i => i.screenId === 1)
-            console.log("filterPermission", filterPermission)
-
-        }
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn ? false : true;
     }
-    console.log({ accessPermission })
+
+
 
     const fieldRender = (event) => {
         if (event.colDef.field === "bg_color") {
@@ -399,6 +403,7 @@ export const UserManagement = () => {
                     <Button variant="contained" color="primary"
                         style={{ justifyContent: 'center', alignItems: 'center', fontSize: 12 }}
                         onClick={handleClickOpen}
+                        disabled={accessActionBtn('Add')}
                     >
                         {renderField('ADD USER')}
                     </Button>
@@ -408,6 +413,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onActivated}
+                        // disabled={accessActionBtn('Activate User')}
                     >
                         {renderField('ACTIVATED USER')}
                     </Button>
@@ -417,6 +423,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onDisabled}
+                        // disabled={accessActionBtn('Disabled User')}
                     >
                         {renderField('DISABLED USER')}
                     </Button>
@@ -426,6 +433,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onDeleted}
+                        // disabled={accessActionBtn('Deleted User')}
                     >
                         {renderField('DELETED USER')}
                     </Button>
@@ -436,6 +444,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onShowAll}
+                        // disabled={accessActionBtn('Show All')}
                     >
                         {renderField('SHOW ALL')}
                     </Button>
@@ -472,10 +481,10 @@ export const UserManagement = () => {
                         <AgGridColumn alignItems='center' width={180} headerName={renderField('userName')} field="userName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={200} headerName={renderField('email')} field="email" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={160} headerName={renderField('mobile')} field="mobile" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
-                        <AgGridColumn alignItems='center' width={77} headerName={renderField('Edit')} cellRenderer='editRender' />
-                        <AgGridColumn alignItems='center' width={80} headerName={renderField('Status')} field="Status" cellRenderer='statusRender' />
-                        <AgGridColumn alignItems='center' width={80} headerName={renderField('Delete')} cellRenderer='deleteRender' />
-                        <AgGridColumn alignItems='center' width={100} headerName={renderField('Password')} cellRenderer='passwordRender' />
+                        {!accessActionBtn('Edit') && <AgGridColumn alignItems='center' width={77} headerName={renderField('Edit')} cellRenderer='editRender' />}
+                        {!accessActionBtn('Status') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Status')} field="Status" cellRenderer='statusRender' />}
+                        {!accessActionBtn('Delete') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Delete')} cellRenderer='deleteRender' />}
+                        {!accessActionBtn('Password') && <AgGridColumn alignItems='center' width={100} headerName={renderField('Password')} cellRenderer='passwordRender' />}
                     </AgGridReact>
                 </div>
 

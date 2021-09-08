@@ -138,7 +138,7 @@ export const AssignRole = () => {
                             startIcon={<AddIcon />}
                             // style={{marginBottom:20}}
                             onClick={handleClickOpen}
-                            disabled={accessActionBtn('Add Role')}
+                            disabled={accessActionBtn('Add')}
                         >
                             {renderField('ADD ROLE')}
 

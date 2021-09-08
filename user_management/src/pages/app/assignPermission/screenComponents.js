@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FormControl, InputLabel, MenuItem, Select, Grid, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import { AddPermissionAddThunk } from 'generic'
 import { useCustomNotify } from '../../../components'
+import { useUserData } from '../../../hooks/useUserData';
+import { getScreenAccessByUserRoleIdThunk } from 'generic';
+import { FieldDetailsbylanguage } from 'generic/src/api/routes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,21 +46,29 @@ const AccordionSummary = withStyles({
 
 
 
-export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId, selectedArray, unSelectedArray }) => {
+export const ScreenComponents = ({ permissions, rolepermissions, title, selectedPermi, id, rollId, selectedArray, unSelectedArray }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const userdata = useUserData();
   const langField = useSelector((state) => state.languageReducer.fieldlanguage);
+  const permiroleid = useSelector((state) => state.screenReducer.screensbyRole.permissions);
+  const roleData = useSelector((state) => state.userReducer.role);
   const [selectedPermission, setSelectedPermission] = useState([]);
   const [unSelectedPermission, setUnSelectedPermission] = useState([]);
   const CustomNotify = useCustomNotify();
 
-  console.log('selectedPermission', selectedPermission)
-  console.log('selectedPermissionun', unSelectedPermission)
 
-  // useEffect(() => {
-  //   selectedArray(selectedPermission);
-  //   unSelectedArray(unSelectedPermission)
-  // }, [selectedPermission, unSelectedPermission])
+  const handleRole = async (e) => {
+    setSelectedPermission([]);
+    const token = window.localStorage.getItem('token')
+    const id = rollId
+    const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }))
+    result?.payload?.permissions?.map(i => {
+      setSelectedPermission(oldArray => [...oldArray,
+      i.per_id,
+      ])
+    })
+  }
 
   const checkHandle = (itemId) => {
     if (!selectedPermission.includes(itemId)) {
@@ -73,37 +84,12 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
     }
 
 
-    // if(!selectedPermission.find(element => element.id === itemId)){
-    //   setSelectedPermission( oldArray => [...oldArray, {
-    //     id:itemId,
-    //     checked: selectedPermission.find(element => element.id === itemId)?.checked===true?false:true,
-    //   }])
-    // } else {
-    //   setSelectedPermission([...selectedPermission?.filter(element => element.id !== itemId), {
-    //     id:itemId,
-    //     checked: false,
-    //   }])
-    // }
   }
 
   useEffect(() => {
-    // selectedPermi({selectedPermission})
-    // selectedPermi(selectedPermission.map((Selected) => {
-    //   return {
-    //     rollId: rollId,
-    //     id: Selected,
-    //     checked: true
-    //   }
-    // }).concat(
-    //   unSelectedPermission.map((Selected) => {
-    //     return {
-    //       rollId: rollId,
-    //       id: Selected,
-    //       checked: false
-    //     }
-    //   }
-    // )))
-  }, [selectedPermission, rollId])
+    handleRole();
+
+  }, [rollId])
 
   const renderField = (value) => {
     let screenName = value;
@@ -116,11 +102,10 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
     return screenName;
   };
 
-  // const checkId = () => {
-  //   return selectedPermission.find(element => element.id === id)?.checked
-  // }
+
 
   const submitData = async () => {
+
     if (rollId) {
       const token = window.localStorage.getItem('token')
       const data = selectedPermission.map((Selected) => {
@@ -140,8 +125,6 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
         ))
 
       const result = await dispatch(AddPermissionAddThunk({ data, token }))
-      console.log('uploadData', result)
-      console.log('uploadData', data)
       if (result.payload === "RolePermission Added") {
         CustomNotify(renderField('Role Permission Added Successfully'), "success")
       } else {
@@ -151,7 +134,10 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
       CustomNotify(renderField('Please select roll'), "warning")
     }
   }
+  const isChecked = (permi) => {
+    console.log("permi", permi)
 
+  }
   return (
     <Accordion style={{ width: 800 }}>
       <AccordionSummary
@@ -170,6 +156,7 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
                 <Grid item xs={12}>
                   {
                     permissions?.map((per) => {
+                      isChecked(per)
                       return (
                         <FormControl key={title + '-' + per.id} style={{}}>
                           <FormControlLabel
@@ -177,6 +164,7 @@ export const ScreenComponents = ({ permissions, title, selectedPermi, id, rollId
                               <Checkbox
                                 // checked={selectedPermission?.find(element => element.id === per.id)?.checked}
                                 checked={selectedPermission?.includes(per.id)}
+                                // checked={()=>}
                                 onChange={() => { checkHandle(per.id) }}
                                 name="checkedB"
                                 color="primary"

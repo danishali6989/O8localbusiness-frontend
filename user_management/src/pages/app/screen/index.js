@@ -271,7 +271,7 @@ export const Screen = () => {
             edge="start"
             aria-label="open drawer"
             variant="contained" color="primary"
-            disabled={accessActionBtn('Edit Screen')}
+            // disabled={accessActionBtn('Edit Screen')}
             onClick={() => buttonClicked(params.data)}>
             <Edit fontSize="small" />
         </IconButton>
@@ -355,7 +355,7 @@ export const Screen = () => {
             edge="start"
             aria-label="open drawer"
             variant="contained" color="secondary"
-            disabled={accessActionBtn('Delete Screen')}
+            // disabled={accessActionBtn('Delete Screen')}
             onClick={() => deleteHandler(params.data)}>
             <DeleteOutline fontSize="small" />
         </IconButton>
@@ -376,7 +376,7 @@ export const Screen = () => {
 
     const accessActionBtn = (btn) => {
         let accessBtn = accessList.find((i) => i.permin_title === btn);
-        return accessBtn?false:true;
+        return accessBtn ? false : true;
     }
 
     return (
@@ -387,7 +387,7 @@ export const Screen = () => {
                     <Button variant="contained" color="primary"
                         style={{ justifyContent: 'center', alignItems: 'center' }}
                         onClick={handleClickOpen}
-                        disabled={accessActionBtn('Add Screen')}
+                        disabled={accessActionBtn('Add')}
                     >
                         {renderField('ADD SCREEN')}
 
@@ -413,8 +413,8 @@ export const Screen = () => {
                         rowData={null}>
                         <AgGridColumn width={300} alignItems='center' headerName={renderField("screenName")} field="screenName" fontSize="small" sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn width={300} alignItems='center' headerName={renderField("screenCode")} field="screenCode" fontSize="small" sortable={true} filter="agTextColumnFilter" />
-                        <AgGridColumn width={100} alignItems='center' headerName={renderField("Edit")} field="Edit" cellRenderer="editRender" />
-                        <AgGridColumn width={100} alignItems='center' headerName={renderField("Delete")} field="Delete" cellRenderer="deleteRender" />
+                        {!accessActionBtn('Edit') && <AgGridColumn width={100} alignItems='center' headerName={renderField("Edit")} field="Edit" cellRenderer="editRender" />}
+                        {!accessActionBtn('Delete') && <AgGridColumn width={100} alignItems='center' headerName={renderField("Delete")} field="Delete" cellRenderer="deleteRender" />}
                     </AgGridReact>
 
                 </div>

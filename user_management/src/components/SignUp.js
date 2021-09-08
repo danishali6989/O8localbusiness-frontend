@@ -9,8 +9,9 @@ import { Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { doRegister } from 'generic/src/redux/reducers/authReducer';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { editUserThunk } from 'generic';
+import { editUserThunk, getScreenAccessByUserRoleIdThunk } from 'generic';
 import { useCustomNotify } from '../components'
+import { useUserData } from '../hooks/useUserData';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 
@@ -58,6 +59,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     const CustomNotify = useCustomNotify();
     const classes = useStyles()
     const dispatch = useDispatch()
+    const userData = useUserData();
     const [isSubmit, setIsSubmit] = useState(false)
     const roleData = useSelector((state) => state.userReducer.role)
     // console.log("roleDat",roleData)
@@ -74,6 +76,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     const [ip_Address, setIp_Address] = useState('')
     const [image, setImage] = useState('')
     const [companyId, setCompanyId] = useState('')
+    const [accessList, setAccessList] = useState([]);
     // const token = window.localStorage.getItem('token')
     const [status, setStatus] = useState(false)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
@@ -182,14 +185,9 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
         // }
 
-
-
-
         setIsSubmit(false)
 
     }
-
-
 
     const renderField = (value) => {
         let screenName = value;
@@ -219,6 +217,28 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     //     }
 
     // }
+
+    useEffect(() => {
+        permiRolelist();
+    }, [])
+
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = userData.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "User");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn ? false : true;
+    }
+
+
+
 
     return (
         <>
@@ -497,7 +517,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                             fullWidth
                             disabled={isSubmit}
                             className={classes.submit}
-
+                            disabled={accessActionBtn('Submit')}
 
                         >
                             {isSubmit ? <CircularProgress /> : renderField('SUBMIT')}

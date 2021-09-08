@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {useSelector} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Grid, makeStyles, TextField } from '@material-ui/core';
 import { useUserData } from '../hooks/useUserData';
+import { getScreenAccessByUserRoleIdThunk } from 'generic'
 // import { useDispatch } from 'react-redux';
 
 
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
     },
     form: {
         // width: '100%',
-        width:500,
-         // Fix IE 11 issue.
+        width: 500,
+        // Fix IE 11 issue.
         marginTop: theme.spacing(2),
 
     },
@@ -67,13 +68,13 @@ export const DailogeBox = ({
     passwrdData
 }) => {
     const classes = useStyles()
-    // const dispatch = useDispatch()
-
     const [adminPassword, setAdminPassword] = useState('');
     const [adminid, setAdminid] = useState('');
     const [newPassword, setNewPassword] = useState('')
+    const dispatch = useDispatch();
+    const [accessList, setAccessList] = useState([]);
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-    const admin = useUserData();
+    const userData = useUserData();
 
 
     const renderField = (value) => {
@@ -87,6 +88,25 @@ export const DailogeBox = ({
         return screenName;
     };
 
+    useEffect(() => {
+        permiRolelist();
+
+    }, [])
+
+    const permiRolelist = async () => {
+        const token = window.localStorage.getItem('token')
+        const id = userData.RoleId;
+        const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "User");
+        let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
+        setAccessList(filterAccessList)
+    };
+
+    const accessActionBtn = (btn) => {
+        let accessBtn = accessList.find((i) => i.permin_title === btn);
+        return accessBtn ? false : true;
+    }
+
     return (
 
         <div>
@@ -96,7 +116,7 @@ export const DailogeBox = ({
                     <Dialog open={paswordOpen} onClose={handlePasswordClose} aria-labelledby="form-dialog-title">
                         <DialogTitle id="form-dialog-title">{renderField('Change Password')}</DialogTitle>
                         <DialogContent>
-                            <form noValidate autoComplete="on" style={{padding:20}} className={classes.form}>
+                            <form noValidate autoComplete="on" style={{ padding: 20 }} className={classes.form}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <TextField
@@ -140,7 +160,7 @@ export const DailogeBox = ({
                                 color="primary"
                                 fullWidth
                                 className={classes.submit}
-
+                                disabled={accessActionBtn('Change Password')}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     // SubmitData()

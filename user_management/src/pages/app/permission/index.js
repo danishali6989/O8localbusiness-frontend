@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import { Checkbox } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -491,7 +492,34 @@ export const Permission = () => {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12}>
-                                            <TextField
+                                            <FormControl variant="outlined" className={classes.formControl}>
+                                                <InputLabel id="demo-simple-select-outlined-label">{renderField('Permission Title')}</InputLabel>
+                                                <Select
+                                                    labelId="demo-simple-select-outlined-label"
+                                                    id="demo-simple-select-outlined"
+                                                    name="roleId"
+                                                    onChange={onPermission}
+                                                    value={permission}
+                                                    // onChange={itemRoleid}
+                                                    onChange={(e) => setPermission(e.target.value)}
+                                                    label="Permission Title"
+                                                    style={{ width: '100%', marginBottom: 20 }}
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>{renderField('Select')}</em>
+                                                    </MenuItem>
+
+                                                    <MenuItem value={"View"}>View</MenuItem>
+                                                    <MenuItem value={"Edit"}>Edit</MenuItem>
+                                                    <MenuItem value={"Delete"}>Delete</MenuItem>
+                                                    <MenuItem value={"Add"}>Add</MenuItem>
+                                                    {/* <MenuItem value={"Status"}>Status</MenuItem>
+                                                    <MenuItem value={"Password"}>Password</MenuItem> */}
+                                                    {/* <MenuItem value={"Add Screen"}>Add Screen</MenuItem> */}
+
+                                                </Select>
+                                            </FormControl>
+                                            {/* <TextField
                                                 variant="outlined"
                                                 required
                                                 fullWidth
@@ -501,7 +529,7 @@ export const Permission = () => {
                                                 autoComplete="Permission Title"
                                                 onChange={onPermission}
                                                 value={permission}
-                                            />
+                                            /> */}
                                         </Grid>
                                         <TextField
                                             id="outlined-multiline-static"

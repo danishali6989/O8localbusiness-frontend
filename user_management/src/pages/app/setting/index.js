@@ -302,7 +302,7 @@ export const Setting = () => {
                 {
                     newStatus &&
 
-                    <Button variant="contained" color="primary" style={{ marginTop: 30 }} onClick={handleClickOpen} disabled={accessActionBtn('Add Email')}>
+                    <Button variant="contained" color="primary" style={{ marginTop: 30 }} onClick={handleClickOpen} disabled={accessActionBtn('Add')}>
                         {renderField('ADD EMAIL')}
                     </Button>
                 }
@@ -360,7 +360,7 @@ export const Setting = () => {
                                                                     onClick={() => {
                                                                         setStatus(false);
                                                                     }}
-                                                                    disabled={accessActionBtn('Edit Email')}
+                                                                   
                                                                 >
                                                                     <Edit style={{ fontSize: "1.5rem", color: "white", marginTop: ".5rem" }} />
                                                                 </IconButton>
@@ -375,7 +375,7 @@ export const Setting = () => {
                                                                     setStatus(true);
                                                                 }}
                                                                 style={{ background: "danger" }}
-                                                                disabled={accessActionBtn('Delete Email')}
+                                                                // disabled={accessActionBtn('Delete Email')}
                                                             >
                                                                 <CancelIcon style={{ background: "danger" }} />
                                                             </IconButton>
@@ -514,6 +514,7 @@ export const Setting = () => {
                                                             // color="primary"
                                                             onClick={updateEmail}
                                                             style={{ background: "#3f51b5", color: "white", marginTop: 20 }}
+                                                            disabled={accessActionBtn('Edit')}
                                                         >
                                                             {renderField("UPDATE")}
 

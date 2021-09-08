@@ -228,7 +228,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
     const permiRolelist = async () => {
         const token = window.localStorage.getItem('token')
-        const id = roleid;
+        const id = userData.RoleId;
         const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
         let getScreenId = result.payload.screens.filter((i) => i.screenName === "Roles");
         let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
@@ -237,7 +237,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
     const accessActionBtn = (btn) => {
         let accessBtn = accessList.find((i) => i.permin_title === btn);
-        return accessBtn?false:true;
+        return accessBtn ? false : true;
     }
 
 
@@ -256,7 +256,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                     // startIcon={<AddIcon />}
                                     style={{ fontSize: 12, textTransform: 'capitalize' }}
                                     onClick={handleScreenOpen}
-                                    disabled={accessActionBtn('Add Screen')}
+                                    disabled={accessActionBtn('Add')}
 
 
                                 >
@@ -272,7 +272,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                         color="primary"
                                         // edge="start"
                                         // aria-label="open drawer"
-                                        disabled={accessActionBtn('Edit Role')}
+                                        disabled={accessActionBtn('Edit')}
                                         onClick={() => {
                                             setStatus(false)
                                         }}
