@@ -8,7 +8,7 @@ import { useUserData } from '../../../hooks/useUserData';
 import { FormControl, InputLabel, MenuItem, Select, Grid, FormControlLabel, Checkbox, Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    GetAllPermissionThunk, getScreenAccessByUserRoleIdThunk
+    GetAllPermissionThunk, getScreenAccessByUserRoleIdThunk,fetchScreens
 } from 'generic'
 
 
@@ -33,7 +33,7 @@ export const AssignPermission = () => {
     const screenlist = useSelector((state) => state.screenReducer.screens);
     const [selectedPermission, setSelectedPermission] = useState([]);
     const [rolepermissions, setRolePermissions] = useState([]);
-    console.log('rolepermissions>', rolepermissions)
+    console.log('rolepermissions>', screenlist)
 
     console.log('screenss--', screenlist)
     const renderField = (value) => {
@@ -48,6 +48,16 @@ export const AssignPermission = () => {
     };
 
 
+    useEffect(() => {
+        getScreens()
+
+    }, [])
+
+    const getScreens = async () => {
+        const result = await dispatch(fetchScreens());
+        return result;
+
+    };
 
     const submitData = async () => {
         const token = window.localStorage.getItem('token')

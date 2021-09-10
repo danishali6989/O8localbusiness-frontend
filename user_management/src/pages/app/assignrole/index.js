@@ -61,6 +61,7 @@ export const AssignRole = () => {
     const user = useUserData();
     const [screenId, setScrennId] = useState('')
     const getuserRoll = useSelector((state) => state.userReducer.role)
+   
     const screen = useSelector((state) => state.screenReducer)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
     const [accessList, setAccessList] = useState([]);

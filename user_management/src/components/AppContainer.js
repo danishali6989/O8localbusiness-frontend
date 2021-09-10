@@ -174,7 +174,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AppConainer = ({ children, screename, value, onForceRender, screen_name }) => {
-    const screenByRole = useSelector(state => state.screenReducer.screensbyRole.screens);
+    const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     const userDetailSelector = useSelector((state) => state.userReducer.userDetail);
     // const languageList = useSelector((state) => state.languageReducer.language);
@@ -245,7 +245,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         }
         try {
             const response = await fetch(`http://smartsoft06-001-site2.ftempurl.com/api/UserLogin/logout/${data.id}`, {
-                // const response = await fetch(`http://localhost/api/UserLogin/logout/${data.id}`, {
+            // const response = await fetch(`https://localhost:44308/api/UserLogin/logout/${data.id}`, {
                 method: 'POST',
                 headers: {
                     CompanyId: 1,
@@ -337,7 +337,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         }
 
 
-        const screen = screenByRole.map((item) => {
+        const screen = screenByRole.screens.map((item) => {
             let screenName;
             if (langField) {
                 let filterField = langField.filter(i => i.field === item.screenName);
@@ -387,7 +387,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                         // dispatch(clearLanguage())
                         dispatch(clearCustomeTheme())
                         localStorage.clear()
-                        history.push('/')
+                        history.push('/Login')
 
                     }}>
 
@@ -501,7 +501,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
 
 
                         <div>
-                            {screenByRole && renderScreen()}
+                            {screenByRole.screens && renderScreen()}
 
 
                         </div>

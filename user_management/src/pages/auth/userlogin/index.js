@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -7,6 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { CircularProgress } from '@material-ui/core';
+import { useCustomNotify } from '../../../components'
+import { fetchScreensbyRole } from 'generic';
+import { useSelector } from 'react-redux'
+import jwtDecode from 'jwt-decode';
+import {  doLoginstep2 } from 'generic';
+import { useDispatch } from 'react-redux';
+// import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     image: {
@@ -53,7 +60,72 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const Userlogin = () => {
+    const dispatch = useDispatch();
     const classes = useStyles();
+    const history = useHistory()
+    const CustomNotify = useCustomNotify();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [opt, setOtp] = useState('');
+    const [isSubmit, setIsSubmit] = useState(false);
+    const auth = useSelector((state) => state.accountReducer);
+    const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
+
+
+    useEffect(() => {
+        console.log({ auth, screenByRole })
+        return () => {
+
+        }
+    }, [])
+
+    const getScreensbyRole = async (token) => {
+        const decoded = jwtDecode(token);
+        const data = {
+            id: decoded.RoleId,
+            token: token
+        }
+
+        const result = await dispatch(fetchScreensbyRole(data));
+        if (result.payload !== undefined) {
+            console.log("getScreensbyRole", result.payload.screens[0].screenUrl)
+            history.push(result.payload.screens[0].screenUrl);
+        } else {
+            CustomNotify("Invalid Credentials", "error");
+        }
+
+    }
+
+
+    const loginstep2 = async () => {
+        
+        if (username !== "" && password !== "" && opt !== "") {
+            setIsSubmit(true)
+            const data = {
+                username,
+                password,
+                otp: opt
+            }
+            console.log('data', data)
+            const result = await dispatch(doLoginstep2({ data }))
+            console.log("result", result.payload)
+            if (result.payload !== undefined) {
+                localStorage.setItem("token", result.payload);
+                setIsSubmit(false);
+                getScreensbyRole(result.payload);
+            } else {
+
+                CustomNotify("Invalid Credentials", "error");
+            }
+        } else {
+            CustomNotify("Please provide username and password", "error");
+
+        }
+
+        setIsSubmit(false)
+
+    }
+
 
     return (
         <div className={classes.image}>
@@ -73,11 +145,37 @@ export const Userlogin = () => {
                                     required
                                     fullWidth
                                     id="otp"
+                                    label="Username"
+                                    autoComplete="username"
+                                    autoFocus
+
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="otp"
+                                    type="password"
+                                    label="Password"
+                                    autoComplete="password"
+                                    autoFocus
+
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="otp"
                                     label="Enter OTP"
                                     autoComplete="otp"
                                     autoFocus
 
-                                //   onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => setOtp(e.target.value)}
                                 />
 
 
@@ -88,16 +186,15 @@ export const Userlogin = () => {
                                 fullWidth
                                 variant="contained"
                                 color="primary"
+                                disabled={isSubmit}
                                 // disabled={loading}
                                 className={classes.submit}
-                            // onClick={(event) => {
-                            //   event.preventDefault();
-                            //   forgotpswHanler()
-                            // }}
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    loginstep2()
+                                }}
                             >
-                                {/* {loading ? <CircularProgress size={18} /> : 'Send Otp'} */}
-                                {/* {<CircularProgress size={18} />} */}
-                                Sumbit
+                                {isSubmit ? <CircularProgress size={18} /> : 'Submit'}
                             </Button>
                         </>
 

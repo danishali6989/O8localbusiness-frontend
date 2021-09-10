@@ -84,7 +84,7 @@ export function ForgotPassword() {
     const data = {
       email
     }
-
+    
     const request = await dispatch(forgotPasswordThunk({ data }))
 
     console.log(request)
@@ -141,8 +141,8 @@ export function ForgotPassword() {
 
         {console.log(otp)}
         {/* {console.log(email)} */}
-        <Typography>{showOtp}</Typography>
-
+        {/* <Typography>{showOtp}</Typography> */}
+    
 
 
 
@@ -227,7 +227,7 @@ export function ForgotPassword() {
               }}
             >
               Verify Otp
-            </Button>
+                    </Button>
 
 
 

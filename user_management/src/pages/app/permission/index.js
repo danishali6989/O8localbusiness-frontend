@@ -125,6 +125,7 @@ export const Permission = () => {
     let gridRef = useRef(null);
     const [gridParams, setGridParams] = useState(null);
     const [permissionEditData, setPermissionEditData] = useState(null);
+    const getTheme = useSelector(state => state.customThemeReducer.newTheme);
 
     const onPermission = (e) => {
         e.preventDefault()
@@ -426,29 +427,26 @@ export const Permission = () => {
                     {renderField(' Add Permission')}
                 </Button>
 
-                <div
-                    className="ag-theme-alpine"
+                <div className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"}
+
                     style={{ height: 400, width: '100vh', marginTop: 50, marginLeft: 60 }}
                 >
 
                     <AgGridReact
                         onGridReady={onGridReady}
                         alwaysShowHorizontalScroll={true}
-                        // pagination={true}
-                        // paginationPageSize="15"
                         frameworkComponents={{
                             editRender: editRender,
                             deleteRender: deleteRender,
                         }}
 
                         loadingOverlayComponent={'customLoadingOverlay'}
-                    // defaultColDef={{ resizable: true }}
                     >
                         <AgGridColumn alignItems='center' headerName={renderField('Permission')} field='permissions' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' headerName={renderField('Screen')} field='screenId' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' headerName={renderField('Description')} field='permission_Description' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
-                        <AgGridColumn alignItems='center' headerName={renderField('Edit')} cellRenderer='editRender' />
-                        <AgGridColumn alignItems='center' headerName={renderField('Delete')} cellRenderer='deleteRender' />
+                        <AgGridColumn alignItems='center' width={100} headerName={renderField('Edit')} cellRenderer='editRender' />
+                        <AgGridColumn alignItems='center' width={100} headerName={renderField('Delete')} cellRenderer='deleteRender' />
                     </AgGridReact>
                 </div>
 
@@ -546,9 +544,10 @@ export const Permission = () => {
                                 </form>
                             </div>
 
-                            <DialogActions>
+                            <DialogActions  >
                                 {permissionEditData ?
                                     <Button
+                                        style={{ marginLeft: 20 }}
                                         variant="contained"
                                         color="primary"
                                         // onClick={updatePermissionHandler}
@@ -558,6 +557,7 @@ export const Permission = () => {
                                     </Button>
                                     :
                                     <Button
+                                        style={{ marginLeft: 20 }}
                                         variant="contained"
                                         color="primary"
                                         onClick={permissionAdd}

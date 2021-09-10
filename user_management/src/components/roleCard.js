@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import { Box } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useUserData } from '../hooks/useUserData';
-// import { editRoleThunk } from '../../../../generic';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { updateRoleThunck } from 'generic'
 import Dialog from '@material-ui/core/Dialog';
@@ -27,7 +26,8 @@ import Multiselect from 'multiselect-react-dropdown';
 import { useCustomNotify } from '../components'
 import { CircularProgress } from '@material-ui/core';
 import '../scrollbar.css'
-import { getRoleThunk } from 'generic/src/redux/reducers/userReducer';
+import { getRoleThunk } from 'generic'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,7 +68,6 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const userData = useUserData()
-    // console.log("user", user.id)
     const history = useHistory()
     const CustomNotify = useCustomNotify();
     const screen = useSelector((state) => state.screenReducer.screens)
@@ -85,8 +84,6 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
     const [accessList, setAccessList] = useState([]);
     const [display, setDisplay] = useState(false)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-    // const permissionlist = useSelector((state) => state.userAccessScreenReducer.data.permissions);
-    // console.log("permissionlist", permissionlist)
 
 
     console.log("next", screen)
@@ -104,16 +101,9 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
     };
 
     useEffect(() => {
-        // editHandler()
+        
         setScreenfatch();
-        // const tempArr = [];
-        // setScreenfatch()?.map((item) => {
-        //     console.log("temoaray item data", item)
-        //     tempArr.push({ name: item.screenName, id: item.id })
-        // })
-        // setMultipleScreen(tempArr)
-        // console.log(tempArr)
-
+        getlAllUserRole();
 
     }, [renderField('UPDATE')])
 
@@ -127,10 +117,10 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
     const getlAllUserRole = async () => {
         const result = await dispatch(getRoleThunk());
+        console.log({ result })
     };
 
     const setScreenfatch = async () => {
-
         const result = await dispatch(fetchScreens())
         const tempArr = [];
         result?.payload?.map((item) => {
@@ -167,13 +157,14 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
         const data = {
             roleName: text,
             id: parseInt(roleid)
+            // id: roleid
+            
         }
         const token = window.localStorage.getItem('token')
         const result = await dispatch(updateRoleThunck({ data, token }))
         if (result.payload === "Updeted") {
+         
             CustomNotify(renderField('Role Updated Successfully'), 'success')
-            // setText(roleName)
-            getlAllUserRole();
         } else {
             CustomNotify(renderField("something went wrong"), 'error');
         }
@@ -214,6 +205,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
         setSecreenOpen(false)
         setLoading(false);
         if (result.payload === 'Created') {
+            getlAllUserRole();
             CustomNotify(renderField("User succesfully created access screen"), 'success');
         } else {
             CustomNotify(renderField("something went wrong"), 'error');
@@ -257,7 +249,6 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
                                     style={{ fontSize: 12, textTransform: 'capitalize' }}
                                     onClick={handleScreenOpen}
                                     disabled={accessActionBtn('Add')}
-
 
                                 >
                                     {renderField('Add Screens')}
@@ -379,7 +370,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
                             <Multiselect
                                 options={multipleScreen}
-                                selectedValues={screenData}
+                                // selectedValues={screenData}
                                 onSelect={onSelect}
                                 displayValue="name"
                                 style={{

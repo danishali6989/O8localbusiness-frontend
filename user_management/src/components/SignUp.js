@@ -80,7 +80,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
     // const token = window.localStorage.getItem('token')
     const [status, setStatus] = useState(false)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-    // const recaptchaRef = React.createRef();
+    const recaptchaRef = React.createRef();
 
     // console.log("isSubmit",isSubmit)
 
@@ -211,12 +211,12 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
         }
     }
 
-    // const statushandler = (value) => {
-    //     if (value) {
-    //         setStatus(true)
-    //     }
+    const statushandler = (value) => {
+        if (value) {
+            setStatus(true)
+        }
 
-    // }
+    }
 
     useEffect(() => {
         permiRolelist();
@@ -501,13 +501,13 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
 
 
                         }
-                        {/* <ReCAPTCHA
+                        <ReCAPTCHA
                             style={{ marginLeft: 10, marginTop: 10 }}
                             sitekey="6LcJp78bAAAAAEOtxDnl6BoADH6Nq12fe_vzLjof"
                             ref={recaptchaRef}
                             value={status}
                             onChange={statushandler}
-                        /> */}
+                        />
 
 
                         <Button
@@ -517,7 +517,7 @@ export const SignUp = ({ handleClose, open, editData, setRefresh, onSubmitClick,
                             fullWidth
                             disabled={isSubmit}
                             className={classes.submit}
-                            disabled={accessActionBtn('Submit')}
+                            // disabled={accessActionBtn('Submit')}
 
                         >
                             {isSubmit ? <CircularProgress /> : renderField('SUBMIT')}

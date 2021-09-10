@@ -14,20 +14,17 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useCustomNotify } from '../../../components'
 import ReCAPTCHA from "react-google-recaptcha";
-import {  useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { fetchScreensbyRole } from 'generic';
 import { useSelector } from 'react-redux'
 import jwtDecode from 'jwt-decode';
-import { doLogin,doLoginstep1 } from 'generic';
+import { doLogin, doLoginstep1 } from 'generic';
 import { useDispatch } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
 
 
-// import { useHistory } from 'react-dom'; 
-// import {useHistory} from 'react-router-dom';
-// import { Validation } from '../../../utils/validation';
-// import { useHistory } from 'react-router';
+
 
 function Copyright() {
     return (
@@ -77,9 +74,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Login = () => {
     const classes = useStyles();
-    // const location = useLocation()
     const history = useHistory()
-    // const history = useHistory();
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [isSubmit, setIsSubmit] = useState(false)
@@ -96,16 +91,7 @@ export const Login = () => {
         return () => {
 
         }
-       
     }, [])
-    // console.log("authtoken",auth.token)
-
-    // useEffect(() => {
-    //         if (auth.token !== null && auth.token !== "" && auth.token !== undefined) {
-
-    //             getScreensbyRole()
-    //         }
-    //     }, [auth])
 
     const getScreensbyRole = async (token) => {
         const decoded = jwtDecode(token);
@@ -115,7 +101,6 @@ export const Login = () => {
         }
 
         const result = await dispatch(fetchScreensbyRole(data));
-        console.log({result})
         if (result.payload !== undefined) {
             console.log("getScreensbyRole", result.payload.screens[0].screenUrl)
             history.push(result.payload.screens[0].screenUrl);
@@ -123,35 +108,35 @@ export const Login = () => {
             CustomNotify("Invalid Credentials", "error");
         }
 
-
     }
+
     const login = async () => {
 
         // if (status) {
-            if (username !== "" && password !== "") {
+        if (username !== "" && password !== "") {
 
-                setIsSubmit(true)
+            setIsSubmit(true)
 
-                const token = window.localStorage.getItem('token')
-                const data = {
-                    username,
-                    password
-                }
-
-                const result = await dispatch(doLogin({ data, token }))
-                console.log("result", result.payload)
-                if (result.payload !== undefined) {
-                    localStorage.setItem("token", result.payload);
-                    setIsSubmit(false);
-                    getScreensbyRole(result.payload);
-                } else {
-
-                    CustomNotify("Invalid Credentials", "error");
-                }
-            } else {
-                CustomNotify("Please provide username and password", "error");
-
+            const token = window.localStorage.getItem('token')
+            const data = {
+                username,
+                password
             }
+
+            const result = await dispatch(doLogin({ data, token }))
+            console.log("result", result.payload)
+            if (result.payload !== undefined) {
+                localStorage.setItem("token", result.payload);
+                setIsSubmit(false);
+                getScreensbyRole(result.payload);
+            } else {
+
+                CustomNotify("Invalid Credentials", "error");
+            }
+        } else {
+            CustomNotify("Please provide username and password", "error");
+
+        }
 
         // }
 
@@ -159,13 +144,49 @@ export const Login = () => {
         setIsSubmit(false)
 
     }
-    // const handler = (value) => {
-    //     console.log(value)
-    //     setStatus(true)
+
+
+
+
+    // const loginstep1 = async () => {
+
+    //     if (status) {
+    //         if (username !== "" && password !== "") {
+
+    //             setIsSubmit(true)
+    //             const data = {
+    //                 username,
+    //                 password
+    //             }
+
+    //             const result = await dispatch(doLoginstep1({ data }))
+    //             console.log({ 'loginstep1': result })
+    //             if (result.payload !== undefined) {
+    //                 setIsSubmit(false);
+
+    //                 CustomNotify("otp send", "success");
+    //                 history.push('/Userlogin');
+    //             } else {
+
+    //                 CustomNotify("Invalid Credentials", "error");
+    //             }
+    //         } else {
+    //             CustomNotify("Please provide username and password", "error");
+
+    //         }
+
+    //     }
+
+
+    //     setIsSubmit(false)
+
     // }
 
+    const handler = (value) => {
+        console.log(value)
+        setStatus(true)
+    }
 
-  
     return (
         <Grid container component="main" className={classes.root}>
             <CssBaseline />
@@ -209,7 +230,7 @@ export const Login = () => {
                             label="Remember me"
                         />
                         {/* <ReCAPTCHA
-                       
+
                             sitekey="6LcJp78bAAAAAEOtxDnl6BoADH6Nq12fe_vzLjof"
                             ref={recaptchaRef}
                             value={status}
@@ -227,7 +248,7 @@ export const Login = () => {
                             onClick={(event) => {
                                 event.preventDefault();
                                 login()
-
+                                // loginstep1()
                                 // history.push('/Userlogin');
                             }}
                         >

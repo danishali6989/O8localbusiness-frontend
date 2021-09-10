@@ -28,20 +28,19 @@ export const MainRouter = withRouter(({ location }) => {
 
 
     return (
+   
 
+            <Switch>
 
-        <Switch>
-
-            <Route exact path='/dashboard' component={DashBoard} />
-            {/* <Route exact path='/UserManagement' component={UserManagement} /> */}
-            <Route exact path='/Screen' component={Screen} />
-            <Route exact path='/Roles' component={AssignRole} />
-            <Route exact path='/reports' component={Report} />
-            <Route exact path='/' component={DashBoard} />
-            <PrivateRoutes path="/UserManagement" component={UserManagement} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/' component={Login} />
-        </Switch>
+                <Route exact path='/dashboard' component={DashBoard} />
+                {/* <Route exact path='/UserManagement' component={UserManagement} /> */}
+                <Route exact path='/Screen' component={Screen} />
+                <Route exact path='/Roles' component={AssignRole} />
+                <Route exact path='/reports' component={Report} />
+                <Route exact path='/' component={DashBoard} />
+                <PrivateRoutes path="/UserManagement" component={UserManagement} />
+                <Route exact path='/login' component={Login} />
+            </Switch>
 
 
     );
