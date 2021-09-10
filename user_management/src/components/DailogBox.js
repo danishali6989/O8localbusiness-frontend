@@ -160,7 +160,7 @@ export const DailogeBox = ({
                                 color="primary"
                                 fullWidth
                                 className={classes.submit}
-                                disabled={accessActionBtn('Change Password')}
+                                // disabled={accessActionBtn('Change Password')}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     // SubmitData()

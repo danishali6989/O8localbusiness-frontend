@@ -11,7 +11,7 @@ import { useCustomNotify } from '../../../components'
 import { fetchScreensbyRole } from 'generic';
 import { useSelector } from 'react-redux'
 import jwtDecode from 'jwt-decode';
-import {  doLoginstep2 } from 'generic';
+import { doLoginstep2 } from 'generic';
 import { useDispatch } from 'react-redux';
 // import { CircularProgress } from '@material-ui/core';
 
@@ -70,6 +70,7 @@ export const Userlogin = () => {
     const [isSubmit, setIsSubmit] = useState(false);
     const auth = useSelector((state) => state.accountReducer);
     const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
+    const logindata = useSelector(state => state.loginReducer.logindata.data);
 
 
     useEffect(() => {
@@ -88,7 +89,6 @@ export const Userlogin = () => {
 
         const result = await dispatch(fetchScreensbyRole(data));
         if (result.payload !== undefined) {
-            console.log("getScreensbyRole", result.payload.screens[0].screenUrl)
             history.push(result.payload.screens[0].screenUrl);
         } else {
             CustomNotify("Invalid Credentials", "error");
@@ -98,12 +98,13 @@ export const Userlogin = () => {
 
 
     const loginstep2 = async () => {
-        
-        if (username !== "" && password !== "" && opt !== "") {
+
+        if (logindata.username !== "" && logindata.password !== "" && opt !== "") {
+            // if (username !== "" && password !== "" && opt !== "") {
             setIsSubmit(true)
             const data = {
-                username,
-                password,
+                username: logindata.username,
+                password: logindata.password,
                 otp: opt
             }
             console.log('data', data)
@@ -139,7 +140,7 @@ export const Userlogin = () => {
 
                             <form className={classes.form} noValidate autoComplete="off">
 
-                                <TextField
+                                {/* <TextField
                                     variant="outlined"
                                     margin="normal"
                                     required
@@ -150,8 +151,8 @@ export const Userlogin = () => {
                                     autoFocus
 
                                     onChange={(e) => setUsername(e.target.value)}
-                                />
-                                <TextField
+                                /> */}
+                                {/* <TextField
                                     variant="outlined"
                                     margin="normal"
                                     required
@@ -163,7 +164,7 @@ export const Userlogin = () => {
                                     autoFocus
 
                                     onChange={(e) => setPassword(e.target.value)}
-                                />
+                                /> */}
 
                                 <TextField
                                     variant="outlined"

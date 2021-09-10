@@ -100,8 +100,13 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
         return screenName;
     };
 
+
     useEffect(() => {
-        
+        permiRolelist();
+    }, [])
+
+    useEffect(() => {
+
         setScreenfatch();
         getlAllUserRole();
 
@@ -158,12 +163,12 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
             roleName: text,
             id: parseInt(roleid)
             // id: roleid
-            
+
         }
         const token = window.localStorage.getItem('token')
         const result = await dispatch(updateRoleThunck({ data, token }))
         if (result.payload === "Updeted") {
-         
+            getlAllUserRole();
             CustomNotify(renderField('Role Updated Successfully'), 'success')
         } else {
             CustomNotify(renderField("something went wrong"), 'error');
@@ -214,9 +219,7 @@ export const RoleCard = ({ data, handleClose, open, setOpen }) => {
 
     }
 
-    useEffect(() => {
-        permiRolelist();
-    }, [])
+  
 
     const permiRolelist = async () => {
         const token = window.localStorage.getItem('token')

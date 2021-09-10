@@ -18,7 +18,7 @@ import { useHistory } from 'react-router-dom';
 import { fetchScreensbyRole } from 'generic';
 import { useSelector } from 'react-redux'
 import jwtDecode from 'jwt-decode';
-import { doLogin, doLoginstep1 } from 'generic';
+import { doLogin, doLoginstep1,setlogindata } from 'generic';
 import { useDispatch } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
@@ -122,9 +122,9 @@ export const Login = () => {
                 username,
                 password
             }
-
+             
             const result = await dispatch(doLogin({ data, token }))
-            console.log("result", result.payload)
+            const newresult = await dispatch(setlogindata({data}))
             if (result.payload !== undefined) {
                 localStorage.setItem("token", result.payload);
                 setIsSubmit(false);
