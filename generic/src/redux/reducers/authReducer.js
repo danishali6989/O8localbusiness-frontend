@@ -4,7 +4,7 @@ import {
     createAsyncThunk,
     createEntityAdapter,
 } from '@reduxjs/toolkit';
-import { login, register, forgotPassword, chnagePassword, userlogoutbyId, loginstep1 } from '../../api/routes';
+import { login, register, forgotPassword, chnagePassword, userlogoutbyId, loginstep1,loginstep2 } from '../../api/routes';
 const authAdapter = createEntityAdapter();
 
 const initialState = authAdapter.getInitialState({
@@ -48,6 +48,20 @@ export const doLoginstep1 = createAsyncThunk(
     },
 );
 
+export const doLoginstep2 = createAsyncThunk(
+    'auth/dologinstep2',
+    async ({ data }) => {
+        try {
+            const response = await loginstep2({ data });
+            if (response) {
+
+                return response;
+            }
+        } catch (err) {
+            return err;
+        }
+    },
+);
 export const userlogoutbyIdThunk = createAsyncThunk(
     'auth/userLogout',
     async ({ id }) => {

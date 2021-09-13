@@ -10,7 +10,10 @@ const loginstep1 = async ({ data }) => {
     const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/UserLoginTwoStep1', { data });
     return result;
 };
-
+const loginstep2 = async ({ data }) => {
+    const result = await post(getAppConfiguration().BASE_URL + 'UserLogin/UserLoginTwoStep2', { data });
+    return result;
+};
 
 const userlogoutbyId = async ({ id }) => {
 
@@ -258,5 +261,6 @@ export {
     getAllPermissions,
     EditPermission,
     DeletePermission,
-    AddRolePermission
+    AddRolePermission,
+    loginstep2
 };

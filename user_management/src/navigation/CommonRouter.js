@@ -7,23 +7,20 @@ import { createBrowserHistory } from 'history'
 export const CommonRouter = () => {
     // const location = useLocation();
     const userid = useUserData();
+    console.log("userlogin", userid)
     const browserHistory = createBrowserHistory();
     return (
 
         <BrowserRouter>
             <Switch>
-                {/* <PrivateRoutes exact path='/' component={DashBoard} />
-                <PrivateRoutes path="/Setting" component={Setting} />
-                <PrivateRoutes path="/user" component={UserManagement} />
-                <PrivateRoutes exact path='/dashboard' component={DashBoard} />
-                <PrivateRoutes exact path='/screen' component={Screen} />
-                <PrivateRoutes exact path='/roles' component={AssignRole} />
-                <PrivateRoutes exact path='/Report' component={Report} />
-                <PrivateRoutes path="/user" component={UserManagement} />
-                <PrivateRoutes path='/permission' component={Permission} />
-                <PrivateRoutes path='/assignPermission' component={AssignPermission} /> */}
-
-
+                {/* <PrivateRoutes exact path='/' component={DashBoard} handler={DashBoard} />
+                <PrivateRoutes path="/Setting" component={Setting} handler={Setting} />
+                <PrivateRoutes path="/user" component={UserManagement} handler={UserManagement} />
+                <PrivateRoutes exact path='/dashboard' component={DashBoard} handler={DashBoard} />
+                <PrivateRoutes exact path='/screen' component={Screen} handler={Screen} />
+                <PrivateRoutes exact path='/roles' component={AssignRole} handler={AssignRole} />
+                <PrivateRoutes exact path='/Report' component={Report} handler={Report} />
+                <PrivateRoutes path="/user" component={UserManagement} handler={UserManagement} /> */}
 
 
                 <PrivateRoutes exact path='/permission'>
@@ -71,6 +68,7 @@ export const CommonRouter = () => {
                 <Route exact path='/ForgotPassword' component={ForgotPassword} />
                 <Route exact path='/Login' component={Login} />
                 <Route exact path='/' component={Login} />
+
             </Switch>
         </BrowserRouter>
 

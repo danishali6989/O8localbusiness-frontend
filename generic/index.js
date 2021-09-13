@@ -7,12 +7,14 @@ export {
   changePasswordThunk,
   userlogoutbyIdThunk,
   clearAuthReducer,
-  doLoginstep1
+  doLoginstep1,
+  doLoginstep2
 } from './src/redux/reducers/authReducer';
 
 export {
   adminChangePassThunk,
-  clearUserState
+  clearUserState,
+  getRoleThunk
 } from './src/redux/reducers/userReducer';
 
 export {
@@ -90,7 +92,9 @@ export {
   // setLanguage
 } from './src/redux/reducers/languageReducer';
 
-
+export {
+  setlogindata
+} from './src/redux/reducers/loginReducer';
 
 export {
   login,

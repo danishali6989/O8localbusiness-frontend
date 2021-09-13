@@ -47,7 +47,6 @@ export const AssignPermission = () => {
         return screenName;
     };
 
-
     useEffect(() => {
         getScreens()
 

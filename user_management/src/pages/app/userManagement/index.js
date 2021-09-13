@@ -481,10 +481,10 @@ export const UserManagement = () => {
                         <AgGridColumn alignItems='center' width={180} headerName={renderField('userName')} field="userName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={200} headerName={renderField('email')} field="email" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={160} headerName={renderField('mobile')} field="mobile" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
-                        {!accessActionBtn('Edit') && <AgGridColumn alignItems='center' width={77} headerName={renderField('Edit')} cellRenderer='editRender' />}
+                        {!accessActionBtn('Edit')  && <AgGridColumn alignItems='center' width={80} headerName={renderField('Edit')} cellRenderer='editRender' />}
                         {!accessActionBtn('Status') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Status')} field="Status" cellRenderer='statusRender' />}
                         {!accessActionBtn('Delete') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Delete')} cellRenderer='deleteRender' />}
-                        {!accessActionBtn('Password') && <AgGridColumn alignItems='center' width={100} headerName={renderField('Password')} cellRenderer='passwordRender' />}
+                        {!accessActionBtn('Password') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Password')} cellRenderer='passwordRender' />}
                     </AgGridReact>
                 </div>
 

@@ -121,11 +121,11 @@ export const Permission = () => {
     const screenlist = useSelector((state) => state.screenReducer.screens)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
     const CustomNotify = useCustomNotify();
+    const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     let paramsData;
     let gridRef = useRef(null);
     const [gridParams, setGridParams] = useState(null);
     const [permissionEditData, setPermissionEditData] = useState(null);
-    const getTheme = useSelector(state => state.customThemeReducer.newTheme);
 
     const onPermission = (e) => {
         e.preventDefault()
@@ -427,7 +427,8 @@ export const Permission = () => {
                     {renderField(' Add Permission')}
                 </Button>
 
-                <div className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"}
+                <div
+                    className={getTheme === 'dark' ? "ag-theme-alpine-dark" : "ag-theme-alpine"}
 
                     style={{ height: 400, width: '100vh', marginTop: 50, marginLeft: 60 }}
                 >
@@ -435,12 +436,15 @@ export const Permission = () => {
                     <AgGridReact
                         onGridReady={onGridReady}
                         alwaysShowHorizontalScroll={true}
+                        pagination={true}
+                        paginationPageSize="15"
                         frameworkComponents={{
                             editRender: editRender,
                             deleteRender: deleteRender,
                         }}
 
                         loadingOverlayComponent={'customLoadingOverlay'}
+                    // defaultColDef={{ resizable: true }}
                     >
                         <AgGridColumn alignItems='center' headerName={renderField('Permission')} field='permissions' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' headerName={renderField('Screen')} field='screenId' cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
@@ -513,7 +517,7 @@ export const Permission = () => {
                                                     <MenuItem value={"Add"}>Add</MenuItem>
                                                     {/* <MenuItem value={"Status"}>Status</MenuItem>
                                                     <MenuItem value={"Password"}>Password</MenuItem> */}
-                                                    {/* <MenuItem value={"Add Screen"}>Add Screen</MenuItem> */}
+
 
                                                 </Select>
                                             </FormControl>
@@ -544,7 +548,7 @@ export const Permission = () => {
                                 </form>
                             </div>
 
-                            <DialogActions  >
+                            <DialogActions>
                                 {permissionEditData ?
                                     <Button
                                         style={{ marginLeft: 20 }}

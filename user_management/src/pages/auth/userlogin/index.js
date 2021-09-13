@@ -71,6 +71,7 @@ export const Userlogin = () => {
     const auth = useSelector((state) => state.accountReducer);
     const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
     const logindata = useSelector(state => state.loginReducer.logindata.data);
+    console.log("logindata", logindata)
 
 
     useEffect(() => {
@@ -89,6 +90,7 @@ export const Userlogin = () => {
 
         const result = await dispatch(fetchScreensbyRole(data));
         if (result.payload !== undefined) {
+            console.log("getScreensbyRole", result.payload.screens[0].screenUrl)
             history.push(result.payload.screens[0].screenUrl);
         } else {
             CustomNotify("Invalid Credentials", "error");
@@ -98,18 +100,14 @@ export const Userlogin = () => {
 
 
     const loginstep2 = async () => {
-
         if (logindata.username !== "" && logindata.password !== "" && opt !== "") {
-            // if (username !== "" && password !== "" && opt !== "") {
             setIsSubmit(true)
             const data = {
                 username: logindata.username,
                 password: logindata.password,
                 otp: opt
             }
-            console.log('data', data)
             const result = await dispatch(doLoginstep2({ data }))
-            console.log("result", result.payload)
             if (result.payload !== undefined) {
                 localStorage.setItem("token", result.payload);
                 setIsSubmit(false);
@@ -140,32 +138,7 @@ export const Userlogin = () => {
 
                             <form className={classes.form} noValidate autoComplete="off">
 
-                                {/* <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="otp"
-                                    label="Username"
-                                    autoComplete="username"
-                                    autoFocus
-
-                                    onChange={(e) => setUsername(e.target.value)}
-                                /> */}
-                                {/* <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="otp"
-                                    type="password"
-                                    label="Password"
-                                    autoComplete="password"
-                                    autoFocus
-
-                                    onChange={(e) => setPassword(e.target.value)}
-                                /> */}
-
+                                
                                 <TextField
                                     variant="outlined"
                                     margin="normal"

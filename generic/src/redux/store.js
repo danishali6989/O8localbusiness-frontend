@@ -14,6 +14,7 @@ import emailSettingReducer from './reducers/emailSettingReducer'
 import forceReducer from './reducers/forceReducer';
 import permissionReducer from './reducers/permissionReducer';
 import rolePermissionReducer from './reducers/rolePermissionReducer';
+import loginReducer from './reducers/loginReducer';
 const composedEnhancer = composeWithDevTools(applyMiddleware(thunkMiddleware));
 
 export const createStoreAndPersistor = (storage) => {
@@ -35,7 +36,8 @@ export const createStoreAndPersistor = (storage) => {
                 languageReducer,
                 forceReducer,
                 permissionReducer,
-                rolePermissionReducer
+                rolePermissionReducer,
+                loginReducer
 
 
             }),
