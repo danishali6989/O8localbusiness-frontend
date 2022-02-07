@@ -5,7 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { CircularProgress } from '@material-ui/core';
 import { useCustomNotify } from '../../../components'
 import { fetchScreensbyRole } from 'generic';

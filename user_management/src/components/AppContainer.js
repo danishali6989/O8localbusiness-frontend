@@ -177,10 +177,8 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
     const screenByRole = useSelector(state => state.screenReducer.screensbyRole);
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
     const userDetailSelector = useSelector((state) => state.userReducer.userDetail);
-    // const languageList = useSelector((state) => state.languageReducer.language);
     const languageList = useSelector((state) => state.languageReducer.fieldgetall);
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-
     const classes = useStyles();
     const history = useHistory();
     const dispatch = useDispatch();
@@ -220,7 +218,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         } else {
             dispatch(setCustomTheme('light'))
         }
-    }
+    
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -245,7 +243,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         }
         try {
             const response = await fetch(`http://smartsoft06-001-site2.ftempurl.com/api/UserLogin/logout/${data.id}`, {
-            // const response = await fetch(`https://localhost:44308/api/UserLogin/logout/${data.id}`, {
+                // const response = await fetch(`https://localhost:44308/api/UserLogin/logout/${data.id}`, {
                 method: 'POST',
                 headers: {
                     CompanyId: 1,
@@ -303,8 +301,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         const token = window.localStorage.getItem('token')
         const lang_id = id;
         const result = await dispatch(FiledGetAllLanguageThunk(lang_id, token));
-
-        console.log("result", result)
+       
         return result;
     };
 
@@ -337,7 +334,7 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
         }
 
 
-        const screen = screenByRole.screens.map((item) => {
+        const screen = screenByRole?.screens.map((item) => {
             let screenName;
             if (langField) {
                 let filterField = langField.filter(i => i.field === item.screenName);
@@ -364,8 +361,6 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                     </ListItemIcon>
                     <ListItemText primary={screenName} />
                 </ListItem>
-
-
             )
 
         });
@@ -390,8 +385,6 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                         history.push('/Login')
 
                     }}>
-
-
                     <ListItemIcon>
                         <LayersIcon style={{ color: '#fff', fontSize: 18 }} />
                     </ListItemIcon>
@@ -472,7 +465,6 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                     <div className={classes.toolbarIcon}>
                         {
                             open ?
-
                                 <>
                                     <Avatar variant="square" className={classes.avatar}>
                                         B
@@ -491,19 +483,14 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
                                     onClick={handleDrawerOpen}
                                 // className={clsx(!zIndex ? classes.menuButton : classes.menuButtonLeft, open && classes.menuButtonHidden,)}
                                 >
-
                                     <MenuIcon />
                                 </IconButton>
                         }
                     </div>
                     <Divider />
                     <List>
-
-
                         <div>
-                            {screenByRole.screens && renderScreen()}
-
-
+                            {screenByRole?.screens && renderScreen()}
                         </div>
                     </List>
                     <Divider />
@@ -517,4 +504,5 @@ export const AppConainer = ({ children, screename, value, onForceRender, screen_
 
         </ThemeProvider>
     );
+}
 }

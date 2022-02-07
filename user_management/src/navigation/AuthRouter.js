@@ -1,9 +1,9 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
-import {Login,DashBoard,UserManagement,ForgotPassword,Userlogin,Screen,AssignRole} from '../pages';
+import { Route, Switch } from 'react-router-dom';
+import { Login, DashBoard, UserManagement, ForgotPassword, Userlogin, Screen, AssignRole } from '../pages';
 export const AuthRouter = () => {
 
-  
+
     return (
         <Switch>
             {/* <Route exact path='/dashboard' component={DashBoard} />

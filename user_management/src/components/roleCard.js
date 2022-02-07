@@ -21,12 +21,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 import { addRoleThunck, fetchScreens } from 'generic';
-import { useHistory } from 'react-router';
-import { addScreenAccessThunk, getUserDataByIdThunk, getScreenAccessByUserRoleIdThunk, getRoleThunk } from 'generic'
+import { useHistory } from 'react-router-dom';
+import { addScreenAccessThunk, getScreenAccessByUserRoleIdThunk, getRoleThunk } from 'generic'
 import Multiselect from 'multiselect-react-dropdown';
 import { useCustomNotify } from '../components'
 import { CircularProgress } from '@material-ui/core';
 import '../scrollbar.css'
+
 // import { getRoleThunk } from 'generic/src/redux/reducers/userReducer';
 
 const useStyles = makeStyles((theme) => ({

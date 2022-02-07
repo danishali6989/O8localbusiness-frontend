@@ -83,7 +83,6 @@ export const UserManagement = () => {
     const [paswordOpen, setPaswordOpen] = useState(false)
     const [gridApi, setGridApi] = useState(null);
     const [accessList, setAccessList] = useState([]);
-    console.log("accessList>>>>", accessList)
     const CustomNotify = useCustomNotify();
 
 
@@ -103,6 +102,7 @@ export const UserManagement = () => {
     const handlePasswordClose = () => {
         setPaswordOpen(false)
     }
+  
 
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -292,7 +292,6 @@ export const UserManagement = () => {
         const token = window.localStorage.getItem('token')
         const lang_id = id;
         const result = await dispatch(FiledGetAllLanguageThunk(lang_id, token));
-        console.log("result....fetchFields", result)
         return result;
     };
 
@@ -413,7 +412,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onActivated}
-                        // disabled={accessActionBtn('Activate User')}
+                    // disabled={accessActionBtn('Activate User')}
                     >
                         {renderField('ACTIVATED USER')}
                     </Button>
@@ -423,7 +422,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onDisabled}
-                        // disabled={accessActionBtn('Disabled User')}
+                    // disabled={accessActionBtn('Disabled User')}
                     >
                         {renderField('DISABLED USER')}
                     </Button>
@@ -433,7 +432,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onDeleted}
-                        // disabled={accessActionBtn('Deleted User')}
+                    // disabled={accessActionBtn('Deleted User')}
                     >
                         {renderField('DELETED USER')}
                     </Button>
@@ -444,7 +443,7 @@ export const UserManagement = () => {
                             marginLeft: 10, marginRight: 10, fontSize: 12
                         }}
                         onClick={onShowAll}
-                        // disabled={accessActionBtn('Show All')}
+                    // disabled={accessActionBtn('Show All')}
                     >
                         {renderField('SHOW ALL')}
                     </Button>
@@ -481,14 +480,14 @@ export const UserManagement = () => {
                         <AgGridColumn alignItems='center' width={180} headerName={renderField('userName')} field="userName" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={200} headerName={renderField('email')} field="email" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
                         <AgGridColumn alignItems='center' width={160} headerName={renderField('mobile')} field="mobile" cellRenderer={fieldRender} sortable={true} filter="agTextColumnFilter" />
-                        {!accessActionBtn('Edit')  && <AgGridColumn alignItems='center' width={80} headerName={renderField('Edit')} cellRenderer='editRender' />}
+                        {!accessActionBtn('Edit') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Edit')} cellRenderer='editRender' />}
                         {!accessActionBtn('Status') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Status')} field="Status" cellRenderer='statusRender' />}
                         {!accessActionBtn('Delete') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Delete')} cellRenderer='deleteRender' />}
-                        {!accessActionBtn('Password') && <AgGridColumn alignItems='center' width={80} headerName={renderField('Password')} cellRenderer='passwordRender' />}
+                        {!accessActionBtn('Password') && <AgGridColumn alignItems='center' width={95} headerName={renderField('Password')} cellRenderer='passwordRender' />}
                     </AgGridReact>
                 </div>
 
-                {/* <!----------------------------password dailogue --------------------------> */}
+                {/* <!----------------------------password dailogue--------------------------> */}
                 <DailogeBox
                     paswordOpen={paswordOpen}
                     handlePasswordOpen={handlePasswordOpen}

@@ -557,7 +557,7 @@ export const Permission = () => {
                                         // onClick={updatePermissionHandler}
                                         onClick={permissionUpdate}
                                     >
-                                        Update
+                                        {renderField('UPDATE')}
                                     </Button>
                                     :
                                     <Button
@@ -566,7 +566,7 @@ export const Permission = () => {
                                         color="primary"
                                         onClick={permissionAdd}
                                     >
-                                        Save
+                                     {renderField('Save')}    
                                     </Button>
                                 }
                                 <Button
@@ -574,7 +574,7 @@ export const Permission = () => {
                                     variant="contained"
                                     onClick={handleClose}
                                 >
-                                    Close
+                                   {renderField('Close')}     
                                 </Button>
                             </DialogActions>
                         </DialogContent>

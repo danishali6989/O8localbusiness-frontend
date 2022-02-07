@@ -12,12 +12,12 @@ import { CommonRouter } from './CommonRouter';
 
 export const Router = () => {
     // const user = null
-  
+
     // const dispatch = useDispatch();
     // const auth = useSelector((state) => state.accountReducer);
     // useEffect(() => {
     //     if (auth.token !== null && auth.token !== "" && auth.token !== undefined) {
-           
+
     //         getScreensbyRole()
     //     }
     // }, [auth])
@@ -35,11 +35,11 @@ export const Router = () => {
 
     // console.log("user////////////", user, auth.token !== null && auth.token !== "" && auth.token !== undefined)
 
-    return   (
-      
-            <CommonRouter />
-    
-    ) 
+    return (
+
+        <CommonRouter />
+
+    )
 
     // return auth.token !== null && auth.token !== "" && auth.token !== undefined ? (
     //     <BrowserRouter>

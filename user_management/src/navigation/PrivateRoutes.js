@@ -1,7 +1,8 @@
 import React, { Component, useState } from 'react'
 import { login } from '../pages/auth/login'
 import { useUserData } from '../hooks/useUserData';
-import { Route, Redirect, useLocation, useHistory } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 
@@ -14,7 +15,7 @@ export const PrivateRoutes = ({ children, ...rest }) => {
     let status = false;
 
     if (screenByRole) {
-            screenByRole.map((item) => {
+        screenByRole.map((item) => {
             if (item.screenUrl === rest.path) {
                 status = true;
                 return;

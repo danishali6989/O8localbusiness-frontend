@@ -33,9 +33,8 @@ export const AssignPermission = () => {
     const screenlist = useSelector((state) => state.screenReducer.screens);
     const [selectedPermission, setSelectedPermission] = useState([]);
     const [rolepermissions, setRolePermissions] = useState([]);
-    console.log('rolepermissions>', screenlist)
-
-    console.log('screenss--', screenlist)
+ 
+    
     const renderField = (value) => {
         let screenName = value;
         if (langField) {
@@ -58,15 +57,6 @@ export const AssignPermission = () => {
 
     };
 
-    const submitData = async () => {
-        const token = window.localStorage.getItem('token')
-
-        const data = {
-
-        }
-        console.log("data", data)
-
-    }
 
     useEffect(async () => {
         const result = await dispatch(GetAllPermissionThunk())
@@ -80,7 +70,6 @@ export const AssignPermission = () => {
         const token = window.localStorage.getItem('token')
         const id = roleId;
         const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }))
-        console.log("handleRole>>>", result.payload.permissions)
         setRolePermissions(result.payload.permissions)
 
     }
