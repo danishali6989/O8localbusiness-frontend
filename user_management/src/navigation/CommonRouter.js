@@ -9,54 +9,48 @@ export const CommonRouter = () => {
     const userid = useUserData();
     console.log("userlogin", userid)
     const browserHistory = createBrowserHistory();
+    
     return (
+   
 
         <BrowserRouter>
             <Switch>
-                {/* <PrivateRoutes exact path='/' component={DashBoard} handler={DashBoard} />
-                <PrivateRoutes path="/Setting" component={Setting} handler={Setting} />
-                <PrivateRoutes path="/user" component={UserManagement} handler={UserManagement} />
-                <PrivateRoutes exact path='/dashboard' component={DashBoard} handler={DashBoard} />
-                <PrivateRoutes exact path='/screen' component={Screen} handler={Screen} />
-                <PrivateRoutes exact path='/roles' component={AssignRole} handler={AssignRole} />
-                <PrivateRoutes exact path='/Report' component={Report} handler={Report} />
-                <PrivateRoutes path="/user" component={UserManagement} handler={UserManagement} /> */}
 
 
-                <PrivateRoutes exact path='/permission'>
+                {/* <PrivateRoutes exact path='/permission'>
                     <Permission />
                 </PrivateRoutes>
 
 
                 <PrivateRoutes exact path='/assignPermission'>
                     <AssignPermission />
-                </PrivateRoutes>
+                </PrivateRoutes> */}
 
                 <PrivateRoutes exact path='/Setting'>
                     <Setting />
                 </PrivateRoutes>
 
-                <PrivateRoutes exact path='/user'>
+                <PrivateRoutes exact path='/UserManagement'>
                     <UserManagement />
                 </PrivateRoutes>
 
                 <PrivateRoutes exact path='/dashboard'>
                     <DashBoard />
                 </PrivateRoutes>
-
+{/* 
                 <PrivateRoutes exact path='/screen'>
                     <Screen />
-                </PrivateRoutes>
+                </PrivateRoutes> */}
 
                 <PrivateRoutes exact path='/Report'>
                     <Report />
                 </PrivateRoutes>
 
-                <PrivateRoutes exact path='/roles'>
+                <PrivateRoutes exact path='/Roles'>
                     <AssignRole />
                 </PrivateRoutes>
 
-                <PrivateRoutes exact path='/user'>
+                <PrivateRoutes exact path='/UserManagement'>
                     <UserManagement />
                 </PrivateRoutes>
 
@@ -64,6 +58,20 @@ export const CommonRouter = () => {
                     <DashBoard />
                 </PrivateRoutes>
 
+                
+                <Route exact path='/permission' component={Permission} />
+                <Route exact path='/assignPermission' component={AssignPermission} />
+                <Route exact path='/screen' component={Screen} />
+                {/* <Route exact path='/user' component={UserManagement} />
+                <Route exact path='/Setting' component={Setting} />
+                <Route exact path='/screen' component={Screen} />
+                <Route exact path='/Report' component={Report} />
+                <Route exact path='/Roles' component={AssignRole} />
+                <Route exact path='/user' component={UserManagement} />
+                <Route exact path='/' component={DashBoard} /> */}
+
+
+                
                 <Route exact path='/Userlogin' component={Userlogin} />
                 <Route exact path='/ForgotPassword' component={ForgotPassword} />
                 <Route exact path='/Login' component={Login} />

@@ -3,7 +3,9 @@
 // const BASE_URL = 'http://smartsoft06-001-site2.ftempurl.com/api/';
 // const BASE_URL = 'http://localhost/api/';
 // const BASE_URL = 'https://localhost:44308/api/';
-const BASE_URL = 'http://172.248.67.186/api/';
+// const BASE_URL = 'http://172.248.67.186/api/';
+
+const BASE_URL = 'http://172.119.151.139:80/api/';
 
 const _APP_CONFIG = {
     BASE_URL: BASE_URL,

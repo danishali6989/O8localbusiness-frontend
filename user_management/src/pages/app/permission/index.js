@@ -154,9 +154,9 @@ export const Permission = () => {
         setOpen(false);
     };
 
-    useEffect(() => {
-        // getAllData();
-    }, [])
+    // useEffect(() => {
+    //     // getAllData();
+    // }, [])
 
 
     const permissionAdd = async () => {
@@ -199,7 +199,6 @@ export const Permission = () => {
         }
 
         const result = await dispatch(PermissionEditThunk(updateData, token));
-
         if (result.payload === 'Permission Updated') {
             CustomNotify(renderField('Updated Successfully'), "success");
             const getAllData = async () => {
@@ -242,9 +241,7 @@ export const Permission = () => {
 
 
     const screenDelete = async (deleteData) => {
-        console.log("deleteData>>", deleteData)
         const user = await fetchUserData();
-
         let deletedTxt = 'Deleted Successfully';
         let sthTxt = 'something went wrong';
         if (user) {

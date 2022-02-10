@@ -56,17 +56,14 @@ export const AssignPermission = () => {
         return result;
 
     };
-
-
     useEffect(async () => {
         const result = await dispatch(GetAllPermissionThunk())
         setPermissions(result.payload);
     }, [])
 
-
     const handleRole = async (e) => {
-        console.log("e.target.value", e.target.value)
         setRoleId(e.target.value)
+        console.log(1)
         const token = window.localStorage.getItem('token')
         const id = roleId;
         const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }))

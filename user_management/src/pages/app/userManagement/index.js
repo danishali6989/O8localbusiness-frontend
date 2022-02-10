@@ -85,7 +85,6 @@ export const UserManagement = () => {
     const [accessList, setAccessList] = useState([]);
     const CustomNotify = useCustomNotify();
 
-
     const handleClickOpen = () => {
         setUserEditData(null)
         setOpen(true);
@@ -142,8 +141,7 @@ export const UserManagement = () => {
         const token = window.localStorage.getItem('token')
         const id = userData.RoleId;
         const result = await dispatch(getScreenAccessByUserRoleIdThunk({ id, token }));
-        console.log("result>>>", result)
-        let getScreenId = result.payload.screens.filter((i) => i.screenName === "User");
+        let getScreenId = result.payload.screens.filter((i) => i.screenName === "Users");
         let filterAccessList = result.payload.permissions.filter((i) => i.screenId === getScreenId[0].screenId);
         setAccessList(filterAccessList)
     };
@@ -327,7 +325,6 @@ export const UserManagement = () => {
         const resultUser = await dispatch(getAlluserDatathunk());
         if (result.payload === "Status Updated") {
             const user = await fetchUserData();
-            console.log("user>>>", user)
             if (user !== null && user !== undefined) {
                 const langId = user.payload?.langId;
                 let text = await changeLanguageField(langId, textValue);

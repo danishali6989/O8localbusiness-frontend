@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Popover } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { languageUserUpdateThunk, getUserDataByIdThunk } from 'generic'
-import { useTranslation } from "react-i18next";
-import { useUserData } from '../hooks/useUserData';
-const useStyles = makeStyles((theme) => ({
-  typography: {
-    padding: theme.spacing(2),
-  },
-}));
+
+
 
 
 
 
 export const LanguageSelect = ({ onLanguageClick }) => {
-  // const langList = useSelector((state) => state.languageReducer.language);
+  // const langListNew = useSelector((state) => state.languageReducer.language);
   const langList = useSelector((state) => state.languageReducer.fieldgetall);
   const userLanguage = useSelector((state) => state.userReducer.userDetail);
   const [anchorEl, setAnchorEl] = React.useState(null);

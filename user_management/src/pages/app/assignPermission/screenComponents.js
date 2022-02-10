@@ -1,7 +1,8 @@
 
-import { Container } from '@material-ui/core'
+
 import React, { useState, useEffect } from 'react'
 import { AppConainer } from '../../../components'
+import { Container } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
@@ -57,6 +58,8 @@ export const ScreenComponents = ({ permissions, rolepermissions, title, selected
   const [unSelectedPermission, setUnSelectedPermission] = useState([]);
   const CustomNotify = useCustomNotify();
 
+  console.log("Select",{selectedPermission})
+  
 
   const handleRole = async (e) => {
     setSelectedPermission([]);
@@ -82,13 +85,10 @@ export const ScreenComponents = ({ permissions, rolepermissions, title, selected
       ])
       setSelectedPermission([...selectedPermission?.filter(element => element !== itemId)])
     }
-
-
   }
 
   useEffect(() => {
     handleRole();
-
   }, [rollId])
 
   const renderField = (value) => {
@@ -105,7 +105,6 @@ export const ScreenComponents = ({ permissions, rolepermissions, title, selected
 
 
   const submitData = async () => {
-
     if (rollId) {
       const token = window.localStorage.getItem('token')
       const data = selectedPermission.map((Selected) => {
@@ -136,7 +135,6 @@ export const ScreenComponents = ({ permissions, rolepermissions, title, selected
   }
   const isChecked = (permi) => {
     console.log("permi", permi)
-
   }
   return (
     <Accordion style={{ width: 800 }}>

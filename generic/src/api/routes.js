@@ -171,13 +171,11 @@ const FieldDetailsbylanguage = async (lang_id, token) => {
 
 const EmailSettingAdd = async ({ data, token }) => {
     const result = await post(getAppConfiguration().BASE_URL + 'EmailSetting/add', { data, token });
-    console.log("resultEmail")
     return result;
 }
 
 const EmailSettingUpdate = async ({ data, token }) => {
     const result = await post(getAppConfiguration().BASE_URL + 'EmailSetting/edit', { data, token });
-    console.log("resultEmail")
     return result;
 }
 
@@ -199,7 +197,6 @@ const getAllPermissions = async () => {
 
 const AddPermission = async ({ data, token }) => {
     const result = await post(getAppConfiguration().BASE_URL + 'Permi/add', { data, token });
-    console.log("resultEmail")
     return result;
 }
 

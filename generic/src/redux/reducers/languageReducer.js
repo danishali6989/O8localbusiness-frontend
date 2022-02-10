@@ -78,7 +78,6 @@ export const FiledGetAllLanguageThunk = createAsyncThunk(
     async ( lang_id, token ) => {
         try {
             const response = await FieldDetailsbylanguage( lang_id, token );
-
             return response;
 
         } catch (err) {
