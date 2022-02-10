@@ -66,13 +66,8 @@ export const UserManagement = () => {
     let gridRef = useRef(null);
     let paramsData;
     const userData = useUserData();
-    console.log("userData", userData)
     const getTheme = useSelector(state => state.customThemeReducer.newTheme);
-    const permissions = useSelector(({ screenReducer }) => screenReducer.screensbyRole);
-    console.log("state", permissions)
     const langField = useSelector((state) => state.languageReducer.fieldlanguage);
-    const permissionlist = useSelector((state) => state.userAccessScreenReducer.data);
-    console.log("permissionlist", permissionlist)
     const [userEditData, setUserEditData] = useState(null);
     const [passwrdData, setPasswrdData] = useState(null)
     const [refresh, setRefresh] = useState('')
