@@ -219,6 +219,26 @@ const AddRolePermission = async ({ data, token }) => {
     return result;
 }
 
+const BusinessCategoriesGetAll = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + "BusinessCategory/GetAll");
+    return result;
+};
+
+const BusinessSubCategoriesGetAll = async () => {
+    const result = await get(getAppConfiguration().BASE_URL + "BusinessSubCategory/GetAll");
+    return result;
+};
+
+const formBuildgetAll = async()=>{
+    const result = await get(getAppConfiguration().BASE_URL+`Form/GetAll`);
+    return result;
+}
+const formBuildData = async({data})=>{
+    console.log("routeDaTA", data)
+    const result = await post(getAppConfiguration().BASE_URL + "Form/Add-Form", {data});
+    console.log("routeReslt", result)
+    return result;
+}
 
 export {
     login,
@@ -259,5 +279,9 @@ export {
     EditPermission,
     DeletePermission,
     AddRolePermission,
-    loginstep2
+    loginstep2,
+    BusinessCategoriesGetAll,
+    BusinessSubCategoriesGetAll,
+    formBuildgetAll,
+    formBuildData
 };

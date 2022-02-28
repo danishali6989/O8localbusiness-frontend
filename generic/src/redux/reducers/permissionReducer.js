@@ -5,13 +5,23 @@ import {
     createEntityAdapter,
 } from '@reduxjs/toolkit';
 
-import { EmailSettingAdd, getAllEmailDetails, getAllPermissions, EmailSettingUpdate, EmailSettingDelete, AddPermission, GetAllPermission, EditPermission, DeletePermission } from '../../api/routes';
+import { EmailSettingAdd,
+     getAllEmailDetails, 
+     getAllPermissions, 
+     EmailSettingUpdate,
+      EmailSettingDelete,
+       AddPermission, 
+       GetAllPermission, EditPermission, DeletePermission,BusinessCategoriesGetAll,BusinessSubCategoriesGetAll,formBuildgetAll, formBuildData, } from '../../api/routes';
 const PermissionAdapter = createEntityAdapter();
 
 const initialState = PermissionAdapter.getInitialState({
     status: 'idle',
     getEmailDetails: [],
     PermissionDelete: null,
+    getcategories:[],
+    getsubcategories:[],
+    fieldGetAll:[]
+
 
 });
 
@@ -44,6 +54,64 @@ export const PermissionAddThunk = createAsyncThunk(
         }
     },
 );
+
+export const BusinessSubCategoriesGetAllThunk = createAsyncThunk(
+    'get/formgetAll',
+    async () => {
+        try {
+            const response = await BusinessSubCategoriesGetAll()
+            if (response) {
+                return response
+            }
+        } catch (err) {
+            return err
+        }
+    }
+  )
+
+  export const BusinessCategoriesGetAllThunk = createAsyncThunk(
+    'get/formgetAll',
+    async () => {
+        try {
+            const response = await BusinessCategoriesGetAll()
+            if (response) {
+                return response
+            }
+        } catch (err) {
+            return err
+        }
+    }
+  )
+
+  export const addformThunk = createAsyncThunk(
+    'add/form',
+    async ({data}) => {
+        try {
+            const response = await formBuildData({data})
+  console.log("response",response)
+            if (response) {
+                return response
+            }
+  
+        } catch (err) {
+            return err
+        }
+    }
+  )
+
+  export const addformgetAllThunk = createAsyncThunk(
+    'get/formgetAll',
+    async () => {
+        try {
+            const response = await formBuildgetAll()
+            if (response) {
+                return response
+            }
+        } catch (err) {
+            return err
+        }
+    }
+  )
 
 export const PermissionEditThunk = createAsyncThunk(
     'setting/permiUpdate',
@@ -102,6 +170,9 @@ const permissionSlice = createSlice({
         // },
     },
     extraReducers: {
+        [addformThunk.fulfilled]: (state, action) => {
+            state.addData = action.payload;
+        },
         [getAllEmailDetailsThunk.fulfilled]: (state, action) => {
             console.log("hhhhhh", action)
             state.getEmailDetails = action.payload;
@@ -121,6 +192,15 @@ const permissionSlice = createSlice({
         [DeletePermissionThunk.fulfilled]: (state, action) => {
             state.PermissionDelete = action.payload;
         },
+        [BusinessCategoriesGetAllThunk.fulfilled]: (state, action) => {
+            state.getcategories = action.payload;
+          },
+          [BusinessSubCategoriesGetAllThunk.fulfilled]: (state, action) => {
+            state.getsubcategories = action.payload;
+          },
+          [addformgetAllThunk.fulfilled]: (state, action) => {
+            state.fieldGetAll = action.payload;
+          },
 
     }
 });

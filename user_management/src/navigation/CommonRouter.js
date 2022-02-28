@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { AssignRole, DashBoard, ForgotPassword, Login, Report, Screen, Userlogin, AssignPermission, Permission, UserManagement, Setting } from '../pages';
+import { AssignRole, DashBoard, ForgotPassword, Login, Report, Screen, Userlogin, AssignPermission, Permission, UserManagement, Setting,CreateBusinessForm } from '../pages';
 import { PrivateRoutes } from './PrivateRoutes';
 import { useUserData } from '../hooks/useUserData';
 import { createBrowserHistory } from 'history'
@@ -16,18 +16,11 @@ export const CommonRouter = () => {
         <BrowserRouter>
             <Switch>
 
-
-                {/* <PrivateRoutes exact path='/permission'>
-                    <Permission />
-                </PrivateRoutes>
-
-
-                <PrivateRoutes exact path='/assignPermission'>
-                    <AssignPermission />
-                </PrivateRoutes> */}
-
                 <PrivateRoutes exact path='/Setting'>
                     <Setting />
+                </PrivateRoutes>
+                <PrivateRoutes exact path='/CreateBusinessForm'>
+                    <CreateBusinessForm />
                 </PrivateRoutes>
 
                 <PrivateRoutes exact path='/UserManagement'>
@@ -37,10 +30,7 @@ export const CommonRouter = () => {
                 <PrivateRoutes exact path='/dashboard'>
                     <DashBoard />
                 </PrivateRoutes>
-{/* 
-                <PrivateRoutes exact path='/screen'>
-                    <Screen />
-                </PrivateRoutes> */}
+
 
                 <PrivateRoutes exact path='/Report'>
                     <Report />
@@ -54,21 +44,20 @@ export const CommonRouter = () => {
                     <UserManagement />
                 </PrivateRoutes>
 
+                <PrivateRoutes exact path='/assignPermission'>
+                    <AssignPermission />
+                </PrivateRoutes>
+
+
+                <PrivateRoutes exact path='/screen'>
+                    <Screen />
+                </PrivateRoutes>
+
                 <PrivateRoutes exact path='/'>
                     <DashBoard />
                 </PrivateRoutes>
 
-                
-                <Route exact path='/permission' component={Permission} />
-                <Route exact path='/assignPermission' component={AssignPermission} />
-                <Route exact path='/screen' component={Screen} />
-                {/* <Route exact path='/user' component={UserManagement} />
-                <Route exact path='/Setting' component={Setting} />
-                <Route exact path='/screen' component={Screen} />
-                <Route exact path='/Report' component={Report} />
-                <Route exact path='/Roles' component={AssignRole} />
-                <Route exact path='/user' component={UserManagement} />
-                <Route exact path='/' component={DashBoard} /> */}
+               
 
 
                 
@@ -76,6 +65,8 @@ export const CommonRouter = () => {
                 <Route exact path='/ForgotPassword' component={ForgotPassword} />
                 <Route exact path='/Login' component={Login} />
                 <Route exact path='/' component={Login} />
+                <Route exact path='/permission' component={Permission} />
+               
 
             </Switch>
         </BrowserRouter>

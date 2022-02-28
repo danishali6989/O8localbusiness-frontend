@@ -90,9 +90,6 @@ export const Screen = () => {
         setUpdateScreenURL(data.screenUrl);
         setScreenData(data);
         setUpdatebox(true)
-
-
-        
     }
 
     const Updatehandleclose = () => {
